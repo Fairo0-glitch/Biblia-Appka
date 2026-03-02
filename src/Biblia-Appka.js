@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient('TWOJ_URL', 'TWOJ_KLUCZ');
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL,
+  process.env.REACT_APP_SUPABASE_ANON_KEY
+);
 
 function BibleApp() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
