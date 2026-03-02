@@ -10,7 +10,7 @@ function App() {
   const [currentVerse, setCurrentVerse] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [author, setAuthor] = useState(""); // Nowy stan dla autora
+  const [author, setAuthor] = useState("");
   const [loading, setLoading] = useState(true);
 
   const loadContent = async (date) => {
@@ -38,7 +38,7 @@ function App() {
         setComments([]);
       }
     } catch (err) {
-      console.error("Błąd:", err.message);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -50,122 +50,129 @@ function App() {
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
-
-    // Logika: jeśli autor jest pusty, wpisz "Anonimowy"
     const finalAuthor = author.trim() === "" ? "Anonimowy" : author.trim();
-
     const { error } = await supabase.from('comments').insert([
-      { 
-        verse_id: currentVerse.id, 
-        text: newComment, 
-        author: finalAuthor 
-      }
+      { verse_id: currentVerse.id, text: newComment, author: finalAuthor }
     ]);
-
-    if (error) {
-      alert("Błąd: " + error.message);
-    } else {
+    if (!error) {
       setNewComment("");
-      setAuthor(""); // Czyścimy pole autora po dodaniu
+      setAuthor("");
       loadContent(selectedDate);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-100 to-amber-50 p-4 font-sans text-stone-900">
-      <div className="max-w-5xl mx-auto mt-12 mb-20">
-        
-        <header className="text-center mb-12">
-          <h1 className="text-4xl font-serif font-bold text-stone-800 mb-2 tracking-tight">Słowo Życia</h1>
-          <div className="h-1.5 w-16 bg-amber-600 mx-auto rounded-full shadow-sm"></div>
-        </header>
+    <div className="min-h-screen bg-[#f8f9fa] font-sans text-slate-900">
+      
+      {/* 1. HERO SECTION - WIELKI CYTAT Z GRADIENTEM */}
+      <section className="relative overflow-hidden bg-slate-900 py-24 md:py-32 px-4">
+        {/* Dynamiczne tło gradientowe w tle sekcji */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-[40%] -left-[10%] w-[70%] h-[80%] rounded-full bg-amber-500/20 blur-[120px] animate-pulse"></div>
+          <div className="absolute -bottom-[40%] -right-[10%] w-[60%] h-[70%] rounded-full bg-blue-600/20 blur-[120px]"></div>
+        </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          
-          <aside className="w-full lg:w-1/3 order-2 lg:order-1">
-            <div className="bg-white/70 backdrop-blur-lg p-6 rounded-[2rem] shadow-xl border border-white sticky top-10">
-              <h3 className="font-bold text-xl mb-6 text-stone-700 flex items-center gap-2">
-                <span>📅</span> Archiwum
-              </h3>
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-stone-400 uppercase tracking-[0.2em]">Wybierz dzień</label>
-                <input 
-                  type="date" 
-                  value={selectedDate} 
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full p-4 rounded-2xl border-none shadow-inner bg-stone-100/50 focus:ring-2 focus:ring-amber-500 outline-none font-medium text-stone-600"
-                />
+        <div className="max-w-5xl mx-auto relative z-10 text-center">
+          {loading ? (
+            <div className="animate-pulse text-stone-400 text-xl font-serif">Otwieranie Słowa...</div>
+          ) : currentVerse ? (
+            <div className="space-y-8">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-amber-400 text-[10px] font-black uppercase tracking-[0.3em] border border-white/10">
+                Słowo na {selectedDate}
+              </span>
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif italic text-white leading-[1.1] tracking-tight px-4">
+                "{currentVerse.verse_text}"
+              </h2>
+              <div className="flex justify-center items-center gap-4">
+                <div className="h-[1px] w-12 bg-amber-500/50"></div>
+                <cite className="text-xl md:text-2xl font-bold text-amber-500 not-italic tracking-wide">
+                  {currentVerse.reference}
+                </cite>
+                <div className="h-[1px] w-12 bg-amber-500/50"></div>
               </div>
+            </div>
+          ) : (
+            <div className="text-stone-500 text-2xl font-serif">Cisza... Brak zapisanego Słowa na ten dzień.</div>
+          )}
+        </div>
+      </section>
+
+      {/* 2. DOLNA CZĘŚĆ - ARCHIWUM I KOMENTARZE */}
+      <div className="max-w-6xl mx-auto px-4 -mt-12 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* PANEL BOCZNY */}
+          <aside className="lg:col-span-4 space-y-6">
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/60 border border-slate-100">
+              <h3 className="font-bold text-xl mb-6 flex items-center gap-3">
+                <span className="p-2 bg-amber-100 rounded-xl text-lg">📅</span> 
+                Archiwum
+              </h3>
+              <input 
+                type="date" 
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full p-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-amber-500 focus:bg-white outline-none transition-all font-semibold text-slate-700 shadow-inner"
+              />
             </div>
           </aside>
 
-          <main className="w-full lg:w-2/3 order-1 lg:order-2">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl border border-white overflow-hidden">
-              
-              {loading ? (
-                <div className="py-32 text-center animate-pulse">Otwieranie księgi...</div>
-              ) : currentVerse ? (
-                <>
-                  <div className="p-10 md:p-16 bg-gradient-to-b from-white to-stone-50/40">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-widest mb-6">
-                      {selectedDate}
-                    </span>
-                    <div className="relative">
-                      <span className="absolute -top-12 -left-8 text-[10rem] text-stone-100 font-serif leading-none select-none z-0">“</span>
-                      <p className="text-3xl font-serif italic text-stone-800 leading-snug relative z-10">{currentVerse.verse_text}</p>
-                      <footer className="mt-10 text-right relative z-10">
-                        <cite className="text-xl font-bold text-amber-700 not-italic">— {currentVerse.reference}</cite>
-                      </footer>
+          {/* KOMENTARZE */}
+          <main className="lg:col-span-8 space-y-8">
+            <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl shadow-slate-200/60 border border-slate-100">
+              <h4 className="text-2xl font-bold mb-10 flex items-center justify-between">
+                Refleksje społeczności
+                <span className="text-sm bg-slate-100 px-4 py-1 rounded-full text-slate-500">{comments.length} wpisów</span>
+              </h4>
+
+              {/* Lista komentarzy */}
+              <div className="space-y-6 mb-12">
+                {comments.map(c => (
+                  <div key={c.id} className="group relative p-6 rounded-3xl bg-slate-50 hover:bg-white border-2 border-transparent hover:border-amber-100 transition-all duration-300">
+                    <p className="text-slate-700 text-lg leading-relaxed mb-4">{c.text}</p>
+                    <div className="flex justify-between items-center text-[11px] font-black text-slate-400 uppercase tracking-widest pt-4 border-t border-slate-200/50">
+                      <span className="flex items-center gap-2 text-amber-600">
+                        <span className="w-2 h-2 bg-amber-500 rounded-full"></span> {c.author}
+                      </span>
+                      <span>{new Date(c.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  
-                  <div className="bg-stone-50/80 p-8 md:p-12 border-t border-stone-100">
-                    <h4 className="font-bold text-2xl mb-8 flex items-center gap-3 text-stone-800">
-                      Refleksje
-                      <span className="text-xs font-bold bg-amber-600 text-white px-2.5 py-1 rounded-full">{comments.length}</span>
-                    </h4>
+                ))}
+              </div>
 
-                    <div className="space-y-6 mb-12">
-                      {comments.map(c => (
-                        <div key={c.id} className="bg-white p-6 rounded-3xl shadow-sm border border-stone-100">
-                          <p className="text-stone-700 leading-relaxed text-lg mb-4">{c.text}</p>
-                          <div className="flex justify-between items-center text-[11px] font-bold text-stone-400 uppercase tracking-widest border-t border-stone-50 pt-4">
-                            <span className="text-amber-700">✍️ {c.author || "Anonimowy"}</span>
-                            <span>{new Date(c.created_at).toLocaleDateString('pl-PL')}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* FORMULARZ Z IMIENIEM */}
-                    <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border border-stone-100 space-y-4">
-                      <input 
-                        type="text"
-                        placeholder="Twoje imię (opcjonalnie)"
-                        className="w-full p-4 rounded-2xl bg-stone-50 border-none focus:ring-2 focus:ring-amber-500 outline-none text-sm font-medium"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                      />
-                      <textarea 
-                        className="w-full p-4 rounded-2xl bg-stone-50 border-none focus:ring-2 focus:ring-amber-500 outline-none resize-none text-stone-700 min-h-[100px]"
-                        placeholder="Co mówi do Ciebie to Słowo?..."
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                      />
-                      <button 
-                        onClick={handleAddComment} 
-                        className="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-4 rounded-2xl transition-all shadow-lg uppercase text-xs tracking-widest"
-                      >
-                        Udostępnij refleksję
-                      </button>
-                    </div>
+              {/* Formularz */}
+              <div className="space-y-4 pt-8 border-t border-slate-100">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase ml-2">Twoje Imię</label>
+                    <input 
+                      type="text"
+                      placeholder="Anonimowy"
+                      value={author}
+                      onChange={(e) => setAuthor(e.target.value)}
+                      className="w-full p-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-amber-500 focus:bg-white outline-none transition-all shadow-inner"
+                    />
                   </div>
-                </>
-              ) : (
-                <div className="py-40 text-center text-stone-400">📖 Brak Słowa na ten dzień.</div>
-              )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase ml-2">Twoja Refleksja</label>
+                  <textarea 
+                    placeholder="Podziel się tym, co czujesz..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="w-full p-6 rounded-3xl bg-slate-50 border-2 border-transparent focus:border-amber-500 focus:bg-white outline-none transition-all shadow-inner min-h-[150px] resize-none"
+                  />
+                </div>
+                <button 
+                  onClick={handleAddComment}
+                  className="w-full py-5 bg-slate-900 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-slate-200 hover:shadow-amber-200 active:scale-[0.98] uppercase tracking-widest text-xs"
+                >
+                  Opublikuj wpis
+                </button>
+              </div>
             </div>
           </main>
+
         </div>
       </div>
     </div>
