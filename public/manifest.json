@@ -1,6 +1,7 @@
 {
   "short_name": "Słowo Życia",
   "name": "Słowo Życia - Codzienna Biblia",
+  "description": "Twoje codzienne spotkanie ze Słowem Bożym.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,7 +11,8 @@
     {
       "src": "logo-apki.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo-apki.png",
@@ -21,6 +23,8 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#f59e0b",
-  "background_color": "#0f172a"
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "orientation": "portrait",
+  "scope": "/"
 }
