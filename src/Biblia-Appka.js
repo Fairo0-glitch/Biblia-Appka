@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Twoja konfiguracja Supabase
 const supabaseUrl = 'https://lmjcsqddmffibtsxndhu.supabase.co';
 const supabaseKey = 'sb_publishable_XJp-j0PPDGNxUXD_MomXFA_j0-suB2r';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -11,168 +10,125 @@ export default function BibliaAppka() {
   const [currentVerse, setCurrentVerse] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [authorName, setAuthorName] = useState(''); // PRZYWRÓCONO: Stan dla podpisu
   const [loading, setLoading] = useState(true);
 
-  // GŁÓWNA FUNKCJA POBIERANIA DANYCH
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       
-      // 1. Pobierz czytanie (Tabela: daily_verses)
-      const { data: verseData, error: vError } = await supabase
+      // 1. Pobierz czytanie
+      const { data: vData } = await supabase
         .from('daily_verses')
         .select('*')
         .eq('date', selectedDate)
         .maybeSingle();
-      
-      if (vError) console.error("Błąd bazy (wiersz):", vError.message);
-      setCurrentVerse(verseData);
+      setCurrentVerse(vData);
 
-      // 2. Pobierz WSZYSTKIE refleksje dla tej daty (Tabela: comments)
-      const { data: commData, error: cError } = await supabase
+      // 2. Pobierz WSZYSTKIE refleksje (nie jedną, ale wszystkie)
+      const { data: cData, error } = await supabase
         .from('comments')
         .select('*')
         .eq('verse_date', selectedDate)
-        .order('created_at', { ascending: false }); // Najnowsze na górze
+        .order('created_at', { ascending: false });
       
-      if (cError) console.error("Błąd bazy (komentarze):", cError.message);
-      setComments(commData || []);
-      
+      if (error) console.error("Błąd pobierania refleksji:", error.message);
+      setComments(cData || []);
       setLoading(false);
     }
     fetchData();
   }, [selectedDate]);
 
-  // DODAWANIE NOWEJ REFLEKSJI
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
+    // Wysyłamy treść ORAZ autora (jeśli pusty, wpisze Anonim)
     const { data, error } = await supabase
       .from('comments')
       .insert([{ 
         verse_date: selectedDate, 
         content: newComment, 
-        author: 'ANONIMOWY' 
+        author: authorName.trim() || 'ANONIMOWY' 
       }])
       .select();
 
     if (!error && data) {
-      setComments(prev => [data[0], ...prev]); // Natychmiast dodaje do listy na ekranie
+      setComments(prev => [data[0], ...prev]);
       setNewComment('');
-    } else if (error) {
-      console.error("Błąd zapisu:", error.message);
-      alert("Nie udało się dodać refleksji. Sprawdź uprawnienia RLS w Supabase.");
-    }
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Słowo Życia',
-        text: `"${currentVerse?.text}" — ${currentVerse?.reference}`,
-        url: window.location.href,
-      });
+      setAuthorName('');
+    } else {
+      console.error("Błąd zapisu:", error?.message);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans">
-      {/* Efekty tła */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-amber-600/10 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full"></div>
-      </div>
-
-      <header className="relative pt-12 pb-8 px-4 text-center">
-        <div className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full mb-8 shadow-xl">
-          <span className="text-2xl">🔥</span>
-          <span className="font-black text-white tracking-wider uppercase tracking-widest">Słowo Życia</span>
-        </div>
-        <h2 className="text-slate-400 uppercase tracking-[0.3em] text-xs font-bold">Czytanie na {selectedDate}</h2>
+    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans p-4">
+      <header className="max-w-2xl mx-auto py-8 text-center">
+        <h1 className="text-3xl font-bold text-white mb-2">Słowo Życia</h1>
+        <p className="text-amber-500 font-medium tracking-widest">{selectedDate}</p>
       </header>
 
-      <main className="relative max-w-6xl mx-auto px-4 pb-24 grid lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-8 bg-slate-800/40 backdrop-blur-2xl p-8 md:p-12 rounded-[3rem] border border-white/5 shadow-2xl">
-          {loading ? (
-            <div className="animate-pulse space-y-4">
-              <div className="h-10 bg-white/10 rounded w-3/4"></div>
-              <div className="h-40 bg-white/10 rounded w-full"></div>
-            </div>
-          ) : currentVerse ? (
+      <main className="max-w-2xl mx-auto space-y-8">
+        {/* Sekcja czytania */}
+        <div className="bg-slate-800/50 p-8 rounded-[2rem] border border-white/10">
+          {loading ? <p>Ładowanie...</p> : currentVerse ? (
             <>
-              <h1 className="text-4xl md:text-5xl font-serif italic text-white leading-tight mb-8">
-                "{currentVerse.text}"
-              </h1>
-              <p className="text-amber-500 font-bold text-xl mb-10">— {currentVerse.reference}</p>
-              
-              <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/5 mb-10">
-                <p className="text-slate-400 text-xs uppercase tracking-widest mb-4">Posłuchaj Słowa:</p>
-                <audio key={currentVerse.audio_url} controls preload="none" className="w-full h-12">
-                  <source src={currentVerse.audio_url} type="audio/mpeg" />
-                </audio>
-              </div>
-
-              <button onClick={handleShare} className="w-full py-5 bg-amber-600 hover:bg-amber-500 text-white font-black rounded-2xl transition-all shadow-lg uppercase tracking-widest">
-                Udostępnij Słowo
-              </button>
-
-              {/* Sekcja Refleksji */}
-              <section className="mt-16 pt-16 border-t border-white/5">
-                <h3 className="text-2xl font-bold text-white mb-8 tracking-tight flex justify-between items-center">
-                  Refleksje
-                  <span className="text-sm font-normal text-slate-500">{comments.length} wpisów</span>
-                </h3>
-                
-                <form onSubmit={handleAddComment} className="mb-10 relative">
-                  <input 
-                    type="text"
-                    placeholder="Twoja refleksja po dzisiejszym Słowie..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="w-full p-5 pr-32 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 transition-all shadow-inner"
-                  />
-                  <button type="submit" className="absolute right-2 top-2 bottom-2 px-6 bg-amber-600 text-white font-bold rounded-xl uppercase text-xs hover:bg-amber-500 transition-colors">
-                    Dodaj
-                  </button>
-                </form>
-
-                <div className="space-y-4">
-                  {comments.length > 0 ? (
-                    comments.map((c) => (
-                      <div key={c.id} className="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
-                        <p className="text-slate-200 mb-2 leading-relaxed">{c.content}</p>
-                        <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                          <span className="text-amber-500">✍️ {c.author}</span>
-                          <span>{new Date(c.created_at).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-slate-500 italic text-center py-4">Bądź pierwszym, który doda refleksję!</p>
-                  )}
-                </div>
-              </section>
+              <h2 className="text-4xl font-serif italic text-white mb-6">"{currentVerse.text}"</h2>
+              <p className="text-amber-500 font-bold mb-6">— {currentVerse.reference}</p>
+              <audio key={currentVerse.audio_url} controls preload="none" className="w-full">
+                <source src={currentVerse.audio_url} type="audio/mpeg" />
+              </audio>
             </>
-          ) : (
-            <div className="py-20 text-center text-slate-500 italic">Brak czytania w bazie na ten dzień.</div>
-          )}
+          ) : <p>Brak czytania na dziś.</p>}
         </div>
 
-        {/* Sidebar z Archiwum */}
-        <aside className="lg:col-span-4">
-          <div className="bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl sticky top-8">
-            <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3">📅 Archiwum</h3>
-            <label htmlFor="date-picker" className="text-slate-400 text-sm mb-2 block font-medium">Wybierz datę:</label>
+        {/* Sekcja refleksji */}
+        <div className="bg-slate-800/50 p-8 rounded-[2rem] border border-white/10">
+          <h3 className="text-2xl font-bold text-white mb-6">Refleksje wspólnoty</h3>
+          
+          <form onSubmit={handleAddComment} className="space-y-3 mb-10">
             <input 
-              id="date-picker"
-              type="date" 
-              value={selectedDate} 
-              onChange={(e) => setSelectedDate(e.target.value)} 
-              className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all cursor-pointer" 
+              type="text"
+              placeholder="Twoje imię / podpis..."
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              className="w-full p-4 rounded-xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500"
             />
+            <textarea 
+              placeholder="Twoja refleksja..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="w-full p-4 h-32 rounded-xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500"
+            />
+            <button type="submit" className="w-full py-4 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl uppercase">
+              Dodaj refleksję
+            </button>
+          </form>
+
+          <div className="space-y-6">
+            {comments.map((c) => (
+              <div key={c.id} className="border-b border-white/5 pb-4">
+                <p className="text-slate-200 mb-2 text-lg">"{c.content}"</p>
+                <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
+                  <span className="text-amber-500">✍️ {c.author}</span>
+                  <span className="text-slate-500">{new Date(c.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+            ))}
           </div>
-        </aside>
+        </div>
+
+        {/* Kalendarz */}
+        <div className="bg-slate-900 p-6 rounded-2xl border border-white/5">
+          <label className="text-sm text-slate-500 block mb-2 text-center uppercase tracking-widest">Szukaj w archiwum:</label>
+          <input 
+            type="date" 
+            value={selectedDate} 
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="w-full bg-transparent text-white text-center font-bold outline-none cursor-pointer"
+          />
+        </div>
       </main>
     </div>
   );
