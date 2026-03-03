@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Dane pobierane z Environment Variables w Vercel
+// Kod pobiera dane z pliku .env lub ustawień Vercel
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -15,18 +15,16 @@ export default function BibliaAppka() {
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // 1. LOGIKA POWIADOMIEŃ PUSH
+  // NOWE: LOGIKA POWIADOMIEŃ PUSH
   useEffect(() => {
     if ("Notification" in window) {
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          console.log("Powiadomienia aktywne.");
-        }
-      });
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+      }
     }
   }, []);
 
-  // 2. LOGIKA LICZNIKA SERII (STREAK)
+  // LOGIKA LICZNIKA SERII (STREAK)
   useEffect(() => {
     const lastVisit = localStorage.getItem('lastVisit');
     const currentStreak = parseInt(localStorage.getItem('streak') || '0');
@@ -49,7 +47,7 @@ export default function BibliaAppka() {
     }
   }, []);
 
-  // 3. POBIERANIE CZYTANIA I REFLEKSJI
+  // POBIERANIE CZYTANIA I REFLEKSJI
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -106,7 +104,6 @@ export default function BibliaAppka() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans selection:bg-amber-500/30">
-      {/* Tło efektowe */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-amber-600/10 blur-[120px] rounded-full animate-pulse"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full"></div>
@@ -140,12 +137,12 @@ export default function BibliaAppka() {
                 </audio>
               </div>
 
-              <button onClick={handleShare} className="w-full py-5 bg-amber-600 hover:bg-amber-500 text-white font-black rounded-2xl transition-all shadow-lg uppercase tracking-widest text-sm">
+              <button onClick={handleShare} className="w-full py-5 bg-amber-600 hover:bg-amber-500 text-white font-black rounded-2xl transition-all shadow-lg uppercase tracking-widest">
                 UDOSTĘPNIJ SŁOWO
               </button>
 
               <section className="mt-16 pt-16 border-t border-white/5">
-                <h3 className="text-2xl font-bold text-white mb-8 tracking-tight">Refleksje Wspólnoty</h3>
+                <h3 className="text-2xl font-bold text-white mb-8">Refleksje Wspólnoty</h3>
                 
                 <form onSubmit={handleAddComment} className="space-y-4 mb-10">
                   <input 
@@ -162,7 +159,7 @@ export default function BibliaAppka() {
                       onChange={(e) => setNewComment(e.target.value)}
                       className="w-full p-5 h-32 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 transition-all resize-none shadow-inner"
                     />
-                    <button type="submit" className="absolute right-3 bottom-3 px-8 py-3 bg-amber-600 text-white font-bold rounded-xl uppercase text-xs hover:bg-amber-500 transition-all shadow-lg active:scale-95">
+                    <button type="submit" className="absolute right-3 bottom-3 px-8 py-3 bg-amber-600 text-white font-bold rounded-xl uppercase text-xs hover:bg-amber-500 transition-all">
                       Dodaj
                     </button>
                   </div>
@@ -182,16 +179,14 @@ export default function BibliaAppka() {
               </section>
             </>
           ) : (
-            <div className="py-20 text-center text-slate-500 italic font-serif">Brak czytania na ten dzień w archiwum.</div>
+            <div className="py-20 text-center text-slate-500 italic font-serif">Brak czytania na ten dzień.</div>
           )}
         </div>
 
         <aside className="lg:col-span-4">
           <div className="bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl sticky top-8">
             <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3 uppercase tracking-tighter">📅 ARCHIWUM</h3>
-            <label htmlFor="date-picker" className="text-slate-500 text-[10px] font-bold uppercase mb-2 block">Zmień datę czytania:</label>
             <input 
-              id="date-picker"
               type="date" 
               value={selectedDate} 
               onChange={(e) => setSelectedDate(e.target.value)} 
