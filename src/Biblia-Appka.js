@@ -15,39 +15,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
 
-  useEffect(() => {
-    if ("Notification" in window) {
-      if (Notification.permission === "default") {
-        Notification.requestPermission();
-      }
-    }
-  }, []);
-
-  const updateStreak = () => {
-    const today = new Date().toLocaleDateString('sv-SE');
-    const lastVisit = localStorage.getItem('lastVisitDate');
-    const currentStreak = parseInt(localStorage.getItem('streakCount') || "0");
-
-    if (lastVisit === today) {
-      setStreak(currentStreak);
-      return;
-    }
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
-
-    let newStreak = 1;
-    if (lastVisit === yesterdayStr) {
-      newStreak = currentStreak + 1;
-    }
-
-    localStorage.setItem('streakCount', newStreak.toString());
-    localStorage.setItem('lastVisitDate', today);
-    setStreak(newStreak);
-  };
-
-  // --- LOGIKA RANG I LISTY ROZWIJANEJ ---
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz", icon: "👂" },
@@ -76,7 +43,48 @@ function App() {
     return [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
   };
   const currentBadge = getCurrentBadge(streak);
-  // --------------------------------------
+
+  const updateStreak = async () => {
+    const today = new Date().toLocaleDateString('sv-SE');
+    let deviceId = localStorage.getItem('deviceId');
+    
+    if (!deviceId) {
+      deviceId = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('deviceId', deviceId);
+    }
+
+    const { data: dbData } = await supabase
+      .from('user_streaks')
+      .select('*')
+      .eq('device_id', deviceId)
+      .maybeSingle();
+
+    let finalStreak = 1;
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
+
+    if (dbData) {
+      if (dbData.last_visit_date === today) {
+        finalStreak = dbData.streak_count;
+      } else if (dbData.last_visit_date === yesterdayStr) {
+        finalStreak = dbData.streak_count + 1;
+      } else {
+        finalStreak = 1;
+      }
+      
+      await supabase
+        .from('user_streaks')
+        .update({ streak_count: finalStreak, last_visit_date: today })
+        .eq('device_id', deviceId);
+    } else {
+      await supabase
+        .from('user_streaks')
+        .insert([{ device_id: deviceId, streak_count: 1, last_visit_date: today }]);
+    }
+
+    setStreak(finalStreak);
+  };
 
   const loadData = async (date) => {
     setLoading(true);
@@ -93,17 +101,17 @@ function App() {
   useEffect(() => {
     loadData(selectedDate);
     updateStreak();
-  }, [selectedDate]);
-
-  const handleAddComment = async () => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
+  }, [selectedDate]);
+
+  const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
     const { error } = await supabase.from('comments').insert([
       { verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }
     ]);
-    if (error) alert("Błąd bazy: " + error.message);
+    if (error) alert("Błąd bazy");
     else { setNewComment(""); setAuthor(""); loadData(selectedDate); }
   };
 
@@ -127,17 +135,12 @@ function App() {
                   <span className="text-white font-black text-2xl tracking-tighter">{streak}</span>
                   <span className="text-[9px] text-amber-500/80 uppercase font-black tracking-[0.2em]">Dni</span>
                 </div>
-
                 <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
-
-                {/* MODYFIKACJA: INTERAKTYWNA RANGA */}
                 <div className="relative group/rank flex flex-col items-start leading-none cursor-help">
                   <span className="text-sm font-black uppercase text-amber-400 flex items-center gap-1">
                     {currentBadge.icon} {currentBadge.label}
                   </span>
                   <span className="text-[8px] text-slate-500 uppercase font-bold">Twoja Ranga</span>
-                  
-                  {/* LISTA ROZWIJANA PO NAJECHANIU */}
                   <div className="absolute top-full left-0 mt-4 w-48 bg-slate-800 border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/rank:opacity-100 group-hover/rank:visible transition-all z-50 p-2 max-h-60 overflow-y-auto custom-scroll">
                     <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-2 p-1 border-b border-white/5">Wszystkie Rangi</p>
                     {RANKS_CONFIG.map(r => (
@@ -147,11 +150,6 @@ function App() {
                       </div>
                     ))}
                   </div>
-                </div>
-
-                <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
-                <div className="text-[10px] text-slate-400 font-medium italic max-w-[80px] text-left leading-tight hidden sm:block">
-                  {streak > 1 ? "Wytrwaj w Słowie!" : "Zacznij drogę"}
                 </div>
               </div>
             </div>
@@ -167,7 +165,6 @@ function App() {
               <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
               {currentVerse.audio_url && (
                 <div className="mt-12 flex flex-col items-center">
-                  <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-4">Posłuchaj czytania</p>
                   <audio controls className="w-full max-w-md h-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl" src={currentVerse.audio_url} />
                 </div>
               )}
@@ -180,7 +177,7 @@ function App() {
 
       <main className="max-w-6xl mx-auto px-4 -mt-16 relative z-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10">
         <aside className="lg:col-span-4 bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl h-fit">
-          <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3"><span className="text-amber-500 text-2xl">📅</span> Archiwum</h3>
+          <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3">📅 Archiwum</h3>
           <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all" />
         </aside>
 
