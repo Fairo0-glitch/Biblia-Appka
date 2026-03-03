@@ -15,7 +15,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
 
-  // LOGIKA STREAK (Licznik dni)
   const updateStreak = () => {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisitDate');
@@ -68,37 +67,41 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans">
-      
-      {/* NAGŁÓWEK / HERO */}
-      <header className="relative pt-20 pb-32 px-4 overflow-hidden rounded-b-[4rem] bg-slate-900 shadow-2xl text-center">
+      <header className="relative pt-16 pb-32 px-4 overflow-hidden rounded-b-[4rem] bg-slate-900 shadow-2xl text-center">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-amber-600/20 blur-[120px] rounded-full animate-pulse"></div>
           <div className="absolute bottom-[10%] right-[-5%] w-[50%] h-[50%] bg-blue-600/20 blur-[100px] rounded-full"></div>
         </div>
 
         <div className="max-w-5xl mx-auto relative z-10">
-          {/* LICZNIK STREAK */}
-          <div className="flex justify-center mb-6">
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-xl">
-              <span className="text-xl">🔥</span>
-              <span className="text-amber-500 font-black text-lg">{streak}</span>
-              <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">dni serii</span>
+          <div className="flex justify-center mb-10 animate-fadeIn">
+            <div className="group relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-orange-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+              <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
+                <div className="relative">
+                  <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]">🔥</span>
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full animate-ping"></span>
+                </div>
+                <div className="flex flex-col items-start leading-none">
+                  <span className="text-white font-black text-2xl tracking-tighter">{streak}</span>
+                  <span className="text-[9px] text-amber-500/80 uppercase font-black tracking-[0.2em]">Dni Serii</span>
+                </div>
+                <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
+                <div className="text-[10px] text-slate-400 font-medium italic max-w-[80px] text-left leading-tight">
+                  {streak > 1 ? "Wspaniała wytrwałość!" : "Zacznij nową drogę"}
+                </div>
+              </div>
             </div>
           </div>
 
-          <span className="px-5 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block">
-            Słowo na {selectedDate}
-          </span>
+          <span className="px-5 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block">Słowo na {selectedDate}</span>
           
           {loading ? (
             <div className="h-40 flex items-center justify-center italic text-slate-500">Otwieranie...</div>
           ) : currentVerse ? (
             <div className="space-y-10 animate-fadeIn">
-              <h1 className="text-4xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">
-                "{currentVerse.verse_text}"
-              </h1>
+              <h1 className="text-4xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">"{currentVerse.verse_text}"</h1>
               <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
-
               {currentVerse.audio_url && (
                 <div className="mt-12 flex flex-col items-center">
                   <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-4">Posłuchaj czytania</p>
@@ -112,7 +115,6 @@ function App() {
         </div>
       </header>
 
-      {/* SEKCJA DOLNA */}
       <main className="max-w-6xl mx-auto px-4 -mt-16 relative z-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10">
         <aside className="lg:col-span-4 bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl h-fit">
           <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3"><span className="text-amber-500 text-2xl">📅</span> Archiwum</h3>
