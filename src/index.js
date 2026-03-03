@@ -12,11 +12,7 @@ root.render(
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('SW registered: ', registration);
-      })
-      .catch(registrationError => {
-        console.log('SW registration failed: ', registrationError);
-      });
+      .then(reg => console.log('SW Registered!', reg))
+      .catch(err => console.log('SW Error:', err));
   });
 }
