@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import BibliaAppka from './Biblia-Appka'; // Ścieżka do Twojego pliku
+import BibliaAppka from './Biblia-Appka';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -9,7 +9,7 @@ root.render(
   </React.StrictMode>
 );
 
-// Rejestracja Service Workera dla PWA
+// Rejestracja Service Workera (wymagana do PWA)
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js').catch(() => {});
