@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('sv-SE'));
   const [currentVerse, setCurrentVerse] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -15,18 +15,16 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
 
-  // --- POWIADOMIENIA PUSH ---
   useEffect(() => {
     if ("Notification" in window) {
       if (Notification.permission === "default") {
-        // Próba automatyczna (zadziała na komputerze)
         Notification.requestPermission();
       }
     }
   }, []);
 
   const updateStreak = () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('sv-SE');
     const lastVisit = localStorage.getItem('lastVisitDate');
     const currentStreak = parseInt(localStorage.getItem('streakCount') || "0");
 
@@ -37,7 +35,7 @@ function App() {
 
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
 
     let newStreak = 1;
     if (lastVisit === yesterdayStr) {
@@ -67,7 +65,6 @@ function App() {
   }, [selectedDate]);
 
   const handleAddComment = async () => {
-    // Wymuszenie prośby o powiadomienia gestem użytkownika (kluczowe dla telefonów)
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
