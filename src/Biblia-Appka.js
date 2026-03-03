@@ -13,6 +13,7 @@ export default function BibliaAppka() {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // GŁÓWNA FUNKCJA POBIERANIA DANYCH
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -24,17 +25,17 @@ export default function BibliaAppka() {
         .eq('date', selectedDate)
         .maybeSingle();
       
-      if (vError) console.error("Błąd cytatu:", vError.message);
+      if (vError) console.error("Błąd bazy (wiersz):", vError.message);
       setCurrentVerse(verseData);
 
-      // 2. Pobierz refleksje (Tabela: comments)
+      // 2. Pobierz WSZYSTKIE refleksje dla tej daty (Tabela: comments)
       const { data: commData, error: cError } = await supabase
         .from('comments')
         .select('*')
         .eq('verse_date', selectedDate)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }); // Najnowsze na górze
       
-      if (cError) console.error("Błąd refleksji:", cError.message);
+      if (cError) console.error("Błąd bazy (komentarze):", cError.message);
       setComments(commData || []);
       
       setLoading(false);
@@ -42,6 +43,7 @@ export default function BibliaAppka() {
     fetchData();
   }, [selectedDate]);
 
+  // DODAWANIE NOWEJ REFLEKSJI
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -55,9 +57,12 @@ export default function BibliaAppka() {
       }])
       .select();
 
-    if (!error) {
-      setComments([data[0], ...comments]);
+    if (!error && data) {
+      setComments(prev => [data[0], ...prev]); // Natychmiast dodaje do listy na ekranie
       setNewComment('');
+    } else if (error) {
+      console.error("Błąd zapisu:", error.message);
+      alert("Nie udało się dodać refleksji. Sprawdź uprawnienia RLS w Supabase.");
     }
   };
 
@@ -65,7 +70,7 @@ export default function BibliaAppka() {
     if (navigator.share) {
       navigator.share({
         title: 'Słowo Życia',
-        text: currentVerse?.text,
+        text: `"${currentVerse?.text}" — ${currentVerse?.reference}`,
         url: window.location.href,
       });
     }
@@ -73,16 +78,18 @@ export default function BibliaAppka() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans">
+      {/* Efekty tła */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-amber-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full"></div>
       </div>
 
       <header className="relative pt-12 pb-8 px-4 text-center">
         <div className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full mb-8 shadow-xl">
           <span className="text-2xl">🔥</span>
-          <span className="font-black text-white tracking-wider uppercase">Seria: 1 Dzień</span>
+          <span className="font-black text-white tracking-wider uppercase tracking-widest">Słowo Życia</span>
         </div>
-        <h2 className="text-slate-400 uppercase tracking-[0.3em] text-xs font-bold">Słowo na {selectedDate}</h2>
+        <h2 className="text-slate-400 uppercase tracking-[0.3em] text-xs font-bold">Czytanie na {selectedDate}</h2>
       </header>
 
       <main className="relative max-w-6xl mx-auto px-4 pb-24 grid lg:grid-cols-12 gap-12">
@@ -110,36 +117,49 @@ export default function BibliaAppka() {
                 Udostępnij Słowo
               </button>
 
+              {/* Sekcja Refleksji */}
               <section className="mt-16 pt-16 border-t border-white/5">
-                <h3 className="text-2xl font-bold text-white mb-8 tracking-tight">Refleksje</h3>
+                <h3 className="text-2xl font-bold text-white mb-8 tracking-tight flex justify-between items-center">
+                  Refleksje
+                  <span className="text-sm font-normal text-slate-500">{comments.length} wpisów</span>
+                </h3>
+                
                 <form onSubmit={handleAddComment} className="mb-10 relative">
                   <input 
                     type="text"
-                    placeholder="Twoja refleksja..."
+                    placeholder="Twoja refleksja po dzisiejszym Słowie..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     className="w-full p-5 pr-32 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 transition-all shadow-inner"
                   />
-                  <button type="submit" className="absolute right-2 top-2 bottom-2 px-6 bg-amber-600 text-white font-bold rounded-xl uppercase text-xs hover:bg-amber-500 transition-colors">Dodaj</button>
+                  <button type="submit" className="absolute right-2 top-2 bottom-2 px-6 bg-amber-600 text-white font-bold rounded-xl uppercase text-xs hover:bg-amber-500 transition-colors">
+                    Dodaj
+                  </button>
                 </form>
+
                 <div className="space-y-4">
-                  {comments.map((c) => (
-                    <div key={c.id} className="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
-                      <p className="text-slate-200 mb-2 leading-relaxed">{c.content}</p>
-                      <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        <span className="text-amber-500">✍️ {c.author}</span>
-                        <span>{new Date(c.created_at).toLocaleDateString()}</span>
+                  {comments.length > 0 ? (
+                    comments.map((c) => (
+                      <div key={c.id} className="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+                        <p className="text-slate-200 mb-2 leading-relaxed">{c.content}</p>
+                        <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <span className="text-amber-500">✍️ {c.author}</span>
+                          <span>{new Date(c.created_at).toLocaleDateString()}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p className="text-slate-500 italic text-center py-4">Bądź pierwszym, który doda refleksję!</p>
+                  )}
                 </div>
               </section>
             </>
           ) : (
-            <div className="py-20 text-center text-slate-500 italic">Brak czytania w bazie na ten dzień. Dodaj je w Supabase!</div>
+            <div className="py-20 text-center text-slate-500 italic">Brak czytania w bazie na ten dzień.</div>
           )}
         </div>
 
+        {/* Sidebar z Archiwum */}
         <aside className="lg:col-span-4">
           <div className="bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl sticky top-8">
             <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3">📅 Archiwum</h3>
