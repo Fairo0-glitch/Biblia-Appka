@@ -15,15 +15,15 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
 
-  // --- DODANO: LOGIKA POWIADOMIEŃ PUSH ---
+  // --- POWIADOMIENIA PUSH ---
   useEffect(() => {
     if ("Notification" in window) {
-      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+      if (Notification.permission === "default") {
+        // Próba automatyczna (zadziała na komputerze)
         Notification.requestPermission();
       }
     }
   }, []);
-  // ---------------------------------------
 
   const updateStreak = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -67,6 +67,11 @@ function App() {
   }, [selectedDate]);
 
   const handleAddComment = async () => {
+    // Wymuszenie prośby o powiadomienia gestem użytkownika (kluczowe dla telefonów)
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
     if (!newComment.trim() || !currentVerse) return;
     const { error } = await supabase.from('comments').insert([
       { verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }
