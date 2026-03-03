@@ -47,6 +47,37 @@ function App() {
     setStreak(newStreak);
   };
 
+  // --- LOGIKA RANG I LISTY ROZWIJANEJ ---
+  const RANKS_CONFIG = [
+    { day: 1, label: "Poszukiwacz", icon: "🔍" },
+    { day: 5, label: "Słuchacz", icon: "👂" },
+    { day: 10, label: "Uczeń", icon: "📖" },
+    { day: 15, label: "Pielgrzym", icon: "🥾" },
+    { day: 20, label: "Świadek", icon: "🕊️" },
+    { day: 25, label: "Gorliwy", icon: "🔥" },
+    { day: 30, label: "Wojownik Światła", icon: "⚔️" },
+    { day: 35, label: "Lektor", icon: "🎙️" },
+    { day: 40, label: "Katechista", icon: "📜" },
+    { day: 45, label: "Ewangelizator", icon: "📣" },
+    { day: 50, label: "Pasterz Serca", icon: "🐑" },
+    { day: 55, label: "Obrońca Wiary", icon: "🛡️" },
+    { day: 60, label: "Kontemplator", icon: "🧘" },
+    { day: 65, label: "Mistyk", icon: "✨" },
+    { day: 70, label: "Misjonarz", icon: "🌍" },
+    { day: 75, label: "Pustelnik", icon: "🏔️" },
+    { day: 80, label: "Wyznawca", icon: "🙏" },
+    { day: 85, label: "Mędrzec Duchowy", icon: "👴" },
+    { day: 90, label: "Teolog", icon: "🧠" },
+    { day: 95, label: "Doktor Kościoła", icon: "🏛️" },
+    { day: 100, label: "Sługa Doskonały", icon: "👑" },
+  ];
+
+  const getCurrentBadge = (count) => {
+    return [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
+  };
+  const currentBadge = getCurrentBadge(streak);
+  // --------------------------------------
+
   const loadData = async (date) => {
     setLoading(true);
     try {
@@ -68,7 +99,6 @@ function App() {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-
     if (!newComment.trim() || !currentVerse) return;
     const { error } = await supabase.from('comments').insert([
       { verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }
@@ -92,15 +122,36 @@ function App() {
               <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
                 <div className="relative">
                   <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]">🔥</span>
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full animate-ping"></span>
                 </div>
                 <div className="flex flex-col items-start leading-none">
                   <span className="text-white font-black text-2xl tracking-tighter">{streak}</span>
-                  <span className="text-[9px] text-amber-500/80 uppercase font-black tracking-[0.2em]">Dni Serii</span>
+                  <span className="text-[9px] text-amber-500/80 uppercase font-black tracking-[0.2em]">Dni</span>
                 </div>
+
                 <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
-                <div className="text-[10px] text-slate-400 font-medium italic max-w-[80px] text-left leading-tight">
-                  {streak > 1 ? "Wspaniała wytrwałość!" : "Zacznij nową drogę"}
+
+                {/* MODYFIKACJA: INTERAKTYWNA RANGA */}
+                <div className="relative group/rank flex flex-col items-start leading-none cursor-help">
+                  <span className="text-sm font-black uppercase text-amber-400 flex items-center gap-1">
+                    {currentBadge.icon} {currentBadge.label}
+                  </span>
+                  <span className="text-[8px] text-slate-500 uppercase font-bold">Twoja Ranga</span>
+                  
+                  {/* LISTA ROZWIJANA PO NAJECHANIU */}
+                  <div className="absolute top-full left-0 mt-4 w-48 bg-slate-800 border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/rank:opacity-100 group-hover/rank:visible transition-all z-50 p-2 max-h-60 overflow-y-auto custom-scroll">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-2 p-1 border-b border-white/5">Wszystkie Rangi</p>
+                    {RANKS_CONFIG.map(r => (
+                      <div key={r.day} className={`flex items-center justify-between p-1.5 rounded-lg text-[10px] ${streak >= r.day ? 'bg-amber-500/10 text-amber-400' : 'text-slate-500'}`}>
+                        <span>{r.icon} {r.label}</span>
+                        <span className="font-bold">{r.day}d</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
+                <div className="text-[10px] text-slate-400 font-medium italic max-w-[80px] text-left leading-tight hidden sm:block">
+                  {streak > 1 ? "Wytrwaj w Słowie!" : "Zacznij drogę"}
                 </div>
               </div>
             </div>
