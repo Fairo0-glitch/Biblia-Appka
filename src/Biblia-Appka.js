@@ -15,6 +15,16 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(0);
 
+  // --- DODANO: LOGIKA POWIADOMIEŃ PUSH ---
+  useEffect(() => {
+    if ("Notification" in window) {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+      }
+    }
+  }, []);
+  // ---------------------------------------
+
   const updateStreak = () => {
     const today = new Date().toISOString().split('T')[0];
     const lastVisit = localStorage.getItem('lastVisitDate');
