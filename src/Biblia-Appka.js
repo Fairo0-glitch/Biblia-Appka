@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
+// KONFIGURACJA SUPABASE - WPISZ SWOJE DANE
 const supabaseUrl = 'TWOJA_URL_Z_SUPABASE';
 const supabaseKey = 'TWÓJ_KLUCZ_Z_SUPABASE';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -13,13 +14,18 @@ export default function BibliaAppka() {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const { data: verseData } = await supabase
-        .from('daily_verses')
-        .select('*')
-        .eq('date', selectedDate)
-        .single();
-      
-      setCurrentVerse(verseData);
+      try {
+        const { data: verseData, error } = await supabase
+          .from('daily_verses')
+          .select('*')
+          .eq('date', selectedDate)
+          .maybeSingle(); // maybeSingle zapobiega błędom gdy nie ma danych
+        
+        if (error) console.error("Supabase Error:", error);
+        setCurrentVerse(verseData);
+      } catch (err) {
+        console.error("Fetch Error:", err);
+      }
       setLoading(false);
     }
     fetchData();
@@ -31,12 +37,13 @@ export default function BibliaAppka() {
         title: 'Słowo Życia',
         text: `Dzisiejsze Słowo: ${currentVerse?.text}`,
         url: window.location.href,
-      });
+      }).catch(err => console.log('Błąd udostępniania:', err));
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans selection:bg-amber-500/30">
+      {/* Tło efektu */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-amber-600/10 blur-[120px] rounded-full"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full"></div>
@@ -45,8 +52,7 @@ export default function BibliaAppka() {
       <header className="relative pt-12 pb-8 px-4 text-center">
         <div className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full mb-8 shadow-xl">
           <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]">🔥</span>
-          <span className="font-black text-white tracking-wider">1 DNI SERII</span>
-          <span className="text-slate-400 font-medium ml-2">Zacznij nową drogę</span>
+          <span className="font-black text-white tracking-wider uppercase">1 Dni Serii</span>
         </div>
         <h2 className="text-slate-400 uppercase tracking-[0.3em] text-sm font-bold mb-2">Słowo na {selectedDate}</h2>
       </header>
@@ -66,14 +72,14 @@ export default function BibliaAppka() {
               <p className="text-amber-500 font-bold text-xl mb-10">— {currentVerse.reference}</p>
               
               <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/5">
-                <p className="text-slate-300 font-medium mb-4 flex items-center gap-2">
-                  <span className="text-xl">🔊</span> Posłuchaj Słowa:
+                <p className="text-slate-300 font-medium mb-4 flex items-center gap-2 text-sm">
+                  <span>🔊</span> POSŁUCHAJ SŁOWA:
                 </p>
                 <audio 
                   key={currentVerse.audio_url}
                   controls 
                   preload="none" 
-                  className="w-full"
+                  className="w-full h-12"
                 >
                   <source src={currentVerse.audio_url} type="audio/mpeg" />
                 </audio>
@@ -87,14 +93,14 @@ export default function BibliaAppka() {
               </button>
             </>
           ) : (
-            <p className="text-center text-slate-400 italic">Brak czytania na ten dzień.</p>
+            <p className="text-center text-slate-400 italic py-20">Nie znaleziono czytania na ten dzień.</p>
           )}
         </div>
 
         <aside className="lg:col-span-4 space-y-8">
           <div className="bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
             <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3">
-              <span className="text-2xl">📅</span> Archiwum
+              <span>📅</span> Archiwum
             </h3>
             <div className="flex flex-col gap-2">
               <label htmlFor="date-picker" className="text-slate-300 text-sm font-medium ml-1">Wybierz datę:</label>
@@ -103,7 +109,7 @@ export default function BibliaAppka() {
                 type="date" 
                 value={selectedDate} 
                 onChange={(e) => setSelectedDate(e.target.value)} 
-                className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all" 
+                className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all cursor-pointer" 
               />
             </div>
           </div>

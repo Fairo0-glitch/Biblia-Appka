@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './Biblia-Appka';
+import App from './Biblia-Appka'; // Upewnij się, że plik nazywa się Biblia-Appka.js
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
