@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -46,7 +46,7 @@ function App() {
   };
   const currentBadge = getCurrentBadge(streak);
 
-  const updateStreak = async () => {
+  const updateStreak = useCallback(async () => {
     const today = new Date().toLocaleDateString('sv-SE');
     let deviceId = localStorage.getItem('deviceId');
     
@@ -88,9 +88,9 @@ function App() {
 
     localStorage.setItem('streakCount', finalStreak.toString());
     setStreak(finalStreak);
-  };
+  }, [streak]);
 
-  const loadData = async (date) => {
+  const loadData = useCallback(async (date) => {
     setLoading(true);
     try {
       const { data: verse } = await supabase.from('daily_verses').select('*').eq('date', date).maybeSingle();
@@ -100,7 +100,7 @@ function App() {
         setComments(comms || []);
       }
     } finally { setLoading(false); }
-  };
+  }, [selectedDate]);
 
   useEffect(() => {
     loadData(selectedDate);
@@ -108,7 +108,7 @@ function App() {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-  }, [selectedDate]);
+  }, [selectedDate, loadData, updateStreak]);
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
