@@ -67,10 +67,11 @@ function App() {
     const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
 
     if (dbData) {
+      const dbStreak = dbData.streak_count;
       if (dbData.last_visit_date === today) {
-        finalStreak = dbData.streak_count;
+        finalStreak = dbStreak;
       } else if (dbData.last_visit_date === yesterdayStr) {
-        finalStreak = dbData.streak_count + 1;
+        finalStreak = dbStreak + 1;
       } else {
         finalStreak = 1;
       }
