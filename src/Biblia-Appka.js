@@ -13,7 +13,9 @@ function App() {
   const [newComment, setNewComment] = useState("");
   const [author, setAuthor] = useState("");
   const [loading, setLoading] = useState(true);
-  const [streak, setStreak] = useState(0);
+  const [streak, setStreak] = useState(() => {
+    return parseInt(localStorage.getItem('streakCount') || "0");
+  });
 
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
@@ -59,7 +61,7 @@ function App() {
       .eq('device_id', deviceId)
       .maybeSingle();
 
-    let finalStreak = 1;
+    let finalStreak = streak;
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
@@ -78,11 +80,13 @@ function App() {
         .update({ streak_count: finalStreak, last_visit_date: today })
         .eq('device_id', deviceId);
     } else {
+      finalStreak = streak > 0 ? streak : 1;
       await supabase
         .from('user_streaks')
-        .insert([{ device_id: deviceId, streak_count: 1, last_visit_date: today }]);
+        .insert([{ device_id: deviceId, streak_count: finalStreak, last_visit_date: today }]);
     }
 
+    localStorage.setItem('streakCount', finalStreak.toString());
     setStreak(finalStreak);
   };
 
