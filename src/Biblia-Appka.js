@@ -100,7 +100,7 @@ function App() {
         setComments(comms || []);
       }
     } finally { setLoading(false); }
-  }, [selectedDate]);
+  }, []);
 
   useEffect(() => {
     loadData(selectedDate);
