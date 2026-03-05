@@ -99,7 +99,6 @@ function App() {
   };
   const currentBadge = getCurrentBadge(streak);
 
-  // PRECYZYJNE WYKRYWANIE URZĄDZENIA
   const getCleanDeviceInfo = () => {
     const ua = navigator.userAgent;
     const width = window.screen.width;
@@ -107,14 +106,13 @@ function App() {
     let os = "Unknown OS";
     let browser = "Other";
 
-    // Wykrywanie Systemu i Wersji
     if (/android/i.test(ua)) {
-      const match = ua.match(/Android\s([0-9\.]+)/);
+      const match = ua.match(/Android\s([0-9.]+)/); // Naprawione: . zamiast \.
       os = `Android ${match ? match[1] : ""}`;
       const modelMatch = ua.match(/;\s([^;]+)\sBuild/);
       if (modelMatch) os += ` (${modelMatch[1]})`;
     } else if (/iPhone|iPad|iPod/.test(ua)) {
-      const match = ua.match(/OS\s([0-9\_]+)/);
+      const match = ua.match(/OS\s([0-9_]+)/); // Naprawione: _ zamiast \_
       os = `iOS ${match ? match[1].replace(/_/g, '.') : ""}`;
     } else if (/Windows/i.test(ua)) {
       os = "Windows";
@@ -122,7 +120,6 @@ function App() {
       os = "MacOS";
     }
 
-    // Wykrywanie Przeglądarki
     if (/chrome|crios/i.test(ua)) browser = "Chrome";
     else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
     else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
