@@ -99,9 +99,55 @@ function App() {
   };
   const currentBadge = getCurrentBadge(streak);
 
+  // PRECYZYJNE WYKRYWANIE URZĄDZENIA
+  const getCleanDeviceInfo = () => {
+    const ua = navigator.userAgent;
+    const width = window.screen.width;
+    const height = window.screen.height;
+    let os = "Unknown OS";
+    let browser = "Other";
+
+    // Wykrywanie Systemu i Wersji
+    if (/android/i.test(ua)) {
+      const match = ua.match(/Android\s([0-9\.]+)/);
+      os = `Android ${match ? match[1] : ""}`;
+      const modelMatch = ua.match(/;\s([^;]+)\sBuild/);
+      if (modelMatch) os += ` (${modelMatch[1]})`;
+    } else if (/iPhone|iPad|iPod/.test(ua)) {
+      const match = ua.match(/OS\s([0-9\_]+)/);
+      os = `iOS ${match ? match[1].replace(/_/g, '.') : ""}`;
+    } else if (/Windows/i.test(ua)) {
+      os = "Windows";
+    } else if (/Macintosh/i.test(ua)) {
+      os = "MacOS";
+    }
+
+    // Wykrywanie Przeglądarki
+    if (/chrome|crios/i.test(ua)) browser = "Chrome";
+    else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+    else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
+
+    return `${os} | ${browser} | Screen: ${width}x${height}`;
+  };
+
+  const sendPushNotification = useCallback((verse) => {
+    if ("Notification" in window && Notification.permission === "granted") {
+      const lastNotified = localStorage.getItem('lastNotifiedDate');
+      const today = new Date().toLocaleDateString('sv-SE');
+      if (lastNotified !== today) {
+        new Notification("Dzisiejsze Słowo", {
+          body: `${verse.reference}: "${verse.verse_text.substring(0, 50)}..."`,
+          icon: "/logo192.png"
+        });
+        localStorage.setItem('lastNotifiedDate', today);
+      }
+    }
+  }, []);
+
   const updateStreak = useCallback(async () => {
     const today = new Date().toLocaleDateString('sv-SE');
     let deviceId = localStorage.getItem('deviceId');
+    const deviceInfo = getCleanDeviceInfo(); 
     
     if (!deviceId) {
       deviceId = Math.random().toString(36).substring(2, 15);
@@ -131,13 +177,22 @@ function App() {
       
       await supabase
         .from('user_streaks')
-        .update({ streak_count: finalStreak, last_visit_date: today })
+        .update({ 
+          streak_count: finalStreak, 
+          last_visit_date: today,
+          device_info: deviceInfo 
+        })
         .eq('device_id', deviceId);
     } else {
       finalStreak = streak > 0 ? streak : 1;
       await supabase
         .from('user_streaks')
-        .insert([{ device_id: deviceId, streak_count: finalStreak, last_visit_date: today }]);
+        .insert([{ 
+          device_id: deviceId, 
+          streak_count: finalStreak, 
+          last_visit_date: today,
+          device_info: deviceInfo 
+        }]);
     }
 
     localStorage.setItem('streakCount', finalStreak.toString());
@@ -149,17 +204,20 @@ function App() {
     try {
       const { data: verse } = await supabase.from('daily_verses').select('*').eq('date', date).maybeSingle();
       setCurrentVerse(verse);
+      if (verse && date === new Date().toLocaleDateString('sv-SE')) {
+        sendPushNotification(verse);
+      }
       if (verse) {
         const { data: comms } = await supabase.from('comments').select('*').eq('verse_id', verse.id).order('created_at', { ascending: true });
         setComments(comms || []);
       }
     } finally { setLoading(false); }
-  }, []);
+  }, [sendPushNotification]);
 
   useEffect(() => {
     loadData(selectedDate);
     updateStreak();
-    if ("Notification" in window && Notification.permission === "default") {
+    if ("Notification" in window && Notification.permission !== "denied") {
       Notification.requestPermission();
     }
   }, [selectedDate, loadData, updateStreak]);
