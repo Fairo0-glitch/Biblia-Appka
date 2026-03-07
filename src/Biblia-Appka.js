@@ -94,38 +94,27 @@ function App() {
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
   ];
 
-  const getCurrentBadge = (count) => {
-    return [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
-  };
+  const getCurrentBadge = (count) => [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
   const currentBadge = getCurrentBadge(streak);
 
-  const getCleanDeviceInfo = () => {
+  const getCleanDeviceInfo = useCallback(() => {
     const ua = navigator.userAgent;
     const width = window.screen.width;
     const height = window.screen.height;
-    let os = "Unknown OS";
-    let browser = "Other";
-
+    let os = "System nieznany";
+    let browser = "Inna";
     if (/android/i.test(ua)) {
-      const match = ua.match(/Android\s([0-9.]+)/); // Naprawione: . zamiast \.
+      const match = ua.match(/Android\s([0-9.]+)/);
       os = `Android ${match ? match[1] : ""}`;
-      const modelMatch = ua.match(/;\s([^;]+)\sBuild/);
-      if (modelMatch) os += ` (${modelMatch[1]})`;
     } else if (/iPhone|iPad|iPod/.test(ua)) {
-      const match = ua.match(/OS\s([0-9_]+)/); // Naprawione: _ zamiast \_
+      const match = ua.match(/OS\s([0-9_]+)/);
       os = `iOS ${match ? match[1].replace(/_/g, '.') : ""}`;
-    } else if (/Windows/i.test(ua)) {
-      os = "Windows";
-    } else if (/Macintosh/i.test(ua)) {
-      os = "MacOS";
     }
-
     if (/chrome|crios/i.test(ua)) browser = "Chrome";
     else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
     else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
-
-    return `${os} | ${browser} | Screen: ${width}x${height}`;
-  };
+    return `${os} | ${browser} | ${width}x${height}`;
+  }, []);
 
   const sendPushNotification = useCallback((verse) => {
     if ("Notification" in window && Notification.permission === "granted") {
@@ -133,7 +122,7 @@ function App() {
       const today = new Date().toLocaleDateString('sv-SE');
       if (lastNotified !== today) {
         new Notification("Dzisiejsze Słowo", {
-          body: `${verse.reference}: "${verse.verse_text.substring(0, 50)}..."`,
+          body: `${verse.reference}: "${verse.verse_text.substring(0, 60)}..."`,
           icon: "/logo192.png"
         });
         localStorage.setItem('lastNotifiedDate', today);
@@ -144,66 +133,34 @@ function App() {
   const updateStreak = useCallback(async () => {
     const today = new Date().toLocaleDateString('sv-SE');
     let deviceId = localStorage.getItem('deviceId');
-    const deviceInfo = getCleanDeviceInfo(); 
-    
+    const deviceInfo = getCleanDeviceInfo();
     if (!deviceId) {
       deviceId = Math.random().toString(36).substring(2, 15);
       localStorage.setItem('deviceId', deviceId);
     }
-
-    const { data: dbData } = await supabase
-      .from('user_streaks')
-      .select('*')
-      .eq('device_id', deviceId)
-      .maybeSingle();
-
+    const { data: dbData } = await supabase.from('user_streaks').select('*').eq('device_id', deviceId).maybeSingle();
     let finalStreak = streak;
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
-
     if (dbData) {
       const dbStreak = dbData.streak_count;
-      if (dbData.last_visit_date === today) {
-        finalStreak = dbStreak;
-      } else if (dbData.last_visit_date === yesterdayStr) {
-        finalStreak = dbStreak + 1;
-      } else {
-        finalStreak = 1;
-      }
-      
-      await supabase
-        .from('user_streaks')
-        .update({ 
-          streak_count: finalStreak, 
-          last_visit_date: today,
-          device_info: deviceInfo 
-        })
-        .eq('device_id', deviceId);
+      finalStreak = dbData.last_visit_date === today ? dbStreak : (dbData.last_visit_date === yesterdayStr ? dbStreak + 1 : 1);
+      await supabase.from('user_streaks').update({ streak_count: finalStreak, last_visit_date: today, device_info: deviceInfo }).eq('device_id', deviceId);
     } else {
       finalStreak = streak > 0 ? streak : 1;
-      await supabase
-        .from('user_streaks')
-        .insert([{ 
-          device_id: deviceId, 
-          streak_count: finalStreak, 
-          last_visit_date: today,
-          device_info: deviceInfo 
-        }]);
+      await supabase.from('user_streaks').insert([{ device_id: deviceId, streak_count: finalStreak, last_visit_date: today, device_info: deviceInfo }]);
     }
-
     localStorage.setItem('streakCount', finalStreak.toString());
     setStreak(finalStreak);
-  }, [streak]);
+  }, [streak, getCleanDeviceInfo]);
 
   const loadData = useCallback(async (date) => {
     setLoading(true);
     try {
       const { data: verse } = await supabase.from('daily_verses').select('*').eq('date', date).maybeSingle();
       setCurrentVerse(verse);
-      if (verse && date === new Date().toLocaleDateString('sv-SE')) {
-        sendPushNotification(verse);
-      }
+      if (verse && date === new Date().toLocaleDateString('sv-SE')) sendPushNotification(verse);
       if (verse) {
         const { data: comms } = await supabase.from('comments').select('*').eq('verse_id', verse.id).order('created_at', { ascending: true });
         setComments(comms || []);
@@ -214,16 +171,12 @@ function App() {
   useEffect(() => {
     loadData(selectedDate);
     updateStreak();
-    if ("Notification" in window && Notification.permission !== "denied") {
-      Notification.requestPermission();
-    }
+    if ("Notification" in window && Notification.permission !== "denied") Notification.requestPermission();
   }, [selectedDate, loadData, updateStreak]);
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
-    const { error } = await supabase.from('comments').insert([
-      { verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }
-    ]);
+    const { error } = await supabase.from('comments').insert([{ verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }]);
     if (error) alert("Błąd bazy");
     else { setNewComment(""); setAuthor(""); loadData(selectedDate); }
   };
@@ -241,9 +194,7 @@ function App() {
             <div className="group relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-orange-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
               <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
-                <div className="relative">
-                  <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]">🔥</span>
-                </div>
+                <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]">🔥</span>
                 <div className="flex flex-col items-start leading-none">
                   <span className="text-white font-black text-2xl tracking-tighter">{streak}</span>
                   <span className="text-[9px] text-amber-500/80 uppercase font-black tracking-[0.2em]">Dni</span>
@@ -254,15 +205,6 @@ function App() {
                     {currentBadge.icon} {currentBadge.label}
                   </span>
                   <span className="text-[8px] text-slate-500 uppercase font-bold">Twoja Ranga</span>
-                  <div className="absolute top-full left-0 mt-4 w-52 bg-slate-800 border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/rank:opacity-100 group-hover/rank:visible transition-all z-50 p-2 max-h-64 overflow-y-auto custom-scroll">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-2 p-1 border-b border-white/5">Postęp Wiary</p>
-                    {RANKS_CONFIG.map(r => (
-                      <div key={r.day} className={`flex items-center justify-between p-1.5 rounded-lg text-[10px] ${streak >= r.day ? 'bg-amber-500/10 text-amber-400' : 'text-slate-500'}`}>
-                        <span>{r.icon} {r.label}</span>
-                        <span className="font-bold">{r.day}d</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
@@ -273,14 +215,19 @@ function App() {
           {loading ? (
             <div className="h-40 flex items-center justify-center italic text-slate-500">Otwieranie...</div>
           ) : currentVerse ? (
-            <div className="space-y-10 animate-fadeIn">
-              <h1 className="text-4xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">"{currentVerse.verse_text}"</h1>
-              <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
+            <div className="space-y-6 animate-fadeIn">
+              {/* NOWY PLAYER */}
               {currentVerse.audio_url && (
-                <div className="mt-12 flex flex-col items-center">
-                  <audio controls className="w-full max-w-md h-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl" src={currentVerse.audio_url} />
+                <div className="flex justify-center">
+                  <div className="w-full max-w-sm p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl flex items-center gap-4">
+                    <div className="w-10 h-10 flex items-center justify-center bg-amber-600 rounded-full text-white shadow-lg">▶️</div>
+                    <audio controls className="w-full h-8 accent-amber-500" src={currentVerse.audio_url} />
+                  </div>
                 </div>
               )}
+              {/* TEKST POD PLAYEREM */}
+              <h1 className="text-4xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">"{currentVerse.verse_text}"</h1>
+              <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
             </div>
           ) : (
             <div className="py-20 text-slate-500 text-xl italic">Brak zapisanego Słowa.</div>
