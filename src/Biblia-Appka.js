@@ -13,121 +13,20 @@ function App() {
   const [newComment, setNewComment] = useState("");
   const [author, setAuthor] = useState("");
   const [loading, setLoading] = useState(true);
-  const [streak, setStreak] = useState(() => {
-    return parseInt(localStorage.getItem('streakCount') || "0");
-  });
+  const [streak, setStreak] = useState(() => parseInt(localStorage.getItem('streakCount') || "0"));
 
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz", icon: "👂" },
     { day: 10, label: "Uczeń", icon: "📖" },
-    { day: 15, label: "Pielgrzym", icon: "🥾" },
-    { day: 20, label: "Świadek", icon: "🕊️" },
-    { day: 25, label: "Gorliwy", icon: "🔥" },
-    { day: 30, label: "Wojownik Światła", icon: "⚔️" },
-    { day: 35, label: "Lektor", icon: "🎙️" },
-    { day: 40, label: "Akolita", icon: "🕯️" },
-    { day: 45, label: "Katechista", icon: "📜" },
-    { day: 50, label: "Ewangelizator", icon: "📣" },
-    { day: 55, label: "Pasterz Serca", icon: "🐑" },
-    { day: 60, label: "Obrońca Wiary", icon: "🛡️" },
-    { day: 65, label: "Kontemplator", icon: "🧘" },
-    { day: 70, label: "Mistyk", icon: "✨" },
-    { day: 75, label: "Misjonarz", icon: "🌍" },
-    { day: 80, label: "Pustelnik", icon: "🏔️" },
-    { day: 85, label: "Wyznawca", icon: "🙏" },
-    { day: 90, label: "Mędrzec Duchowy", icon: "👴" },
-    { day: 95, label: "Teolog", icon: "🧠" },
-    { day: 100, label: "Doktor Kościoła", icon: "🏛️" },
-    { day: 105, label: "Nowicjusz", icon: "🌿" },
-    { day: 110, label: "Zakonnik", icon: "⛪" },
-    { day: 115, label: "Opat", icon: "🗝️" },
-    { day: 120, label: "Kanonik", icon: "📙" },
-    { day: 125, label: "Pustelnik Karmelu", icon: "🌋" },
-    { day: 130, label: "Rycerz Niepokalanej", icon: "🛡️" },
-    { day: 135, label: "Sługa Boży", icon: "🙇" },
-    { day: 140, label: "Czciciel Słowa", icon: "💖" },
-    { day: 145, label: "Głos na Pustyni", icon: "🌵" },
-    { day: 150, label: "Syn Światłości", icon: "☀️" },
-    { day: 155, label: "Stróż Poranka", icon: "🌅" },
-    { day: 160, label: "Niosący Nadzieję", icon: "⚓" },
-    { day: 165, label: "Budowniczy Arki", icon: "🔨" },
-    { day: 170, label: "Przyjaciel Oblubieńca", icon: "💍" },
-    { day: 175, label: "Szafarz Łaski", icon: "🍷" },
-    { day: 180, label: "Męczennik Codzienności", icon: "🥀" },
-    { day: 185, label: "Wędrowiec Pański", icon: "🚶" },
-    { day: 190, label: "Ogrodnik Wiary", icon: "🌱" },
-    { day: 195, label: "Rybak Ludzi", icon: "🎣" },
-    { day: 200, label: "Apostoł Narodów", icon: "🚢" },
-    { day: 205, label: "Świadek Nadziei", icon: "🌅" },
-    { day: 210, label: "Strażnik Tradycji", icon: "📚" },
-    { day: 215, label: "Filadelfijczyk", icon: "🤝" },
-    { day: 220, label: "Wierny Efezczyk", icon: "🏰" },
-    { day: 225, label: "Mieszkaniec Syjonu", icon: "⛰️" },
-    { day: 230, label: "Dziedzic Obietnicy", icon: "📜" },
-    { day: 235, label: "Potomek Abrahama", icon: "🌌" },
-    { day: 240, label: "Widzący Boga", icon: "👁️" },
-    { day: 245, label: "Pokorny Sługa", icon: "🧹" },
-    { day: 250, label: "Zwiastun Pokoju", icon: "🕊️" },
-    { day: 255, label: "Mąż Sprawiedliwy", icon: "⚖️" },
-    { day: 260, label: "Naczynie Wybrane", icon: "🏺" },
-    { day: 265, label: "Sól Ziemi", icon: "🧂" },
-    { day: 270, label: "Światłość Świata", icon: "🏙️" },
-    { day: 275, label: "Latorośl Winna", icon: "🍇" },
-    { day: 280, label: "Ziarno Dobrej Ziemi", icon: "🌾" },
-    { day: 285, label: "Słup Ognisty", icon: "🔥" },
-    { day: 290, label: "Głos Proroka", icon: "📢" },
-    { day: 295, label: "Widzący Chwałę", icon: "🌈" },
-    { day: 300, label: "Towarzysz Aniołów", icon: "👼" },
-    { day: 305, label: "Domownik Boga", icon: "🏠" },
-    { day: 310, label: "Mieszkaniec Przybytku", icon: "⛺" },
-    { day: 315, label: "Współdziedzic", icon: "💎" },
-    { day: 320, label: "Dziecko Boże", icon: "👶" },
-    { day: 325, label: "Przyjaciel Jezusa", icon: "🤝" },
-    { day: 330, label: "Umiłowany Uczeń", icon: "💓" },
-    { day: 335, label: "Wybraniec Niebios", icon: "⭐" },
-    { day: 340, label: "Patriarcha Nowy", icon: "👴" },
-    { day: 345, label: "Strażnik Bram", icon: "🗝️" },
-    { day: 350, label: "Sługa Wierny", icon: "👑" },
-    { day: 355, label: "Gość Baranka", icon: "🍷" },
-    { day: 360, label: "Dziedzic Królestwa", icon: "🏰" },
-    { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
+    { day: 365, label: "Zwycięzca", icon: "🏆" }
   ];
 
   const getCurrentBadge = (count) => [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
   const currentBadge = getCurrentBadge(streak);
 
   const getCleanDeviceInfo = useCallback(() => {
-    const ua = navigator.userAgent;
-    const width = window.screen.width;
-    const height = window.screen.height;
-    let os = "System nieznany";
-    let browser = "Inna";
-    if (/android/i.test(ua)) {
-      const match = ua.match(/Android\s([0-9.]+)/);
-      os = `Android ${match ? match[1] : ""}`;
-    } else if (/iPhone|iPad|iPod/.test(ua)) {
-      const match = ua.match(/OS\s([0-9_]+)/);
-      os = `iOS ${match ? match[1].replace(/_/g, '.') : ""}`;
-    }
-    if (/chrome|crios/i.test(ua)) browser = "Chrome";
-    else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
-    else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
-    return `${os} | ${browser} | ${width}x${height}`;
-  }, []);
-
-  const sendPushNotification = useCallback((verse) => {
-    if ("Notification" in window && Notification.permission === "granted") {
-      const lastNotified = localStorage.getItem('lastNotifiedDate');
-      const today = new Date().toLocaleDateString('sv-SE');
-      if (lastNotified !== today) {
-        new Notification("Dzisiejsze Słowo", {
-          body: `${verse.reference}: "${verse.verse_text.substring(0, 60)}..."`,
-          icon: "/logo192.png"
-        });
-        localStorage.setItem('lastNotifiedDate', today);
-      }
-    }
+    return `${navigator.userAgent} | ${window.screen.width}x${window.screen.height}`;
   }, []);
 
   const updateStreak = useCallback(async () => {
@@ -140,8 +39,7 @@ function App() {
     }
     const { data: dbData } = await supabase.from('user_streaks').select('*').eq('device_id', deviceId).maybeSingle();
     let finalStreak = streak;
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
     if (dbData) {
       const dbStreak = dbData.streak_count;
@@ -160,100 +58,99 @@ function App() {
     try {
       const { data: verse } = await supabase.from('daily_verses').select('*').eq('date', date).maybeSingle();
       setCurrentVerse(verse);
-      if (verse && date === new Date().toLocaleDateString('sv-SE')) sendPushNotification(verse);
       if (verse) {
         const { data: comms } = await supabase.from('comments').select('*').eq('verse_id', verse.id).order('created_at', { ascending: true });
         setComments(comms || []);
       }
     } finally { setLoading(false); }
-  }, [sendPushNotification]);
+  }, []);
 
   useEffect(() => {
     loadData(selectedDate);
     updateStreak();
-    if ("Notification" in window && Notification.permission !== "denied") Notification.requestPermission();
   }, [selectedDate, loadData, updateStreak]);
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
-    const { error } = await supabase.from('comments').insert([{ verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }]);
-    if (error) alert("Błąd bazy");
-    else { setNewComment(""); setAuthor(""); loadData(selectedDate); }
+    await supabase.from('comments').insert([{ verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }]);
+    setNewComment(""); setAuthor(""); loadData(selectedDate);
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans">
-      <header className="relative pt-16 pb-32 px-4 overflow-hidden rounded-b-[4rem] bg-slate-900 shadow-2xl text-center">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-amber-600/20 blur-[120px] rounded-full animate-pulse"></div>
-          <div className="absolute bottom-[10%] right-[-5%] w-[50%] h-[50%] bg-blue-600/20 blur-[100px] rounded-full"></div>
-        </div>
-
-        <div className="max-w-5xl mx-auto relative z-10">
-          <div className="flex justify-center mb-10 animate-fadeIn">
-            <div className="group relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-600 to-orange-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-              <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl">
-                <span className="text-2xl filter drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]">🔥</span>
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-white font-black text-2xl tracking-tighter">{streak}</span>
-                  <span className="text-[9px] text-amber-500/80 uppercase font-black tracking-[0.2em]">Dni</span>
-                </div>
-                <div className="h-8 w-[1px] bg-white/10 mx-1"></div>
-                <div className="relative group/rank flex flex-col items-start leading-none cursor-help">
-                  <span className="text-sm font-black uppercase text-amber-400 flex items-center gap-1">
-                    {currentBadge.icon} {currentBadge.label}
-                  </span>
-                  <span className="text-[8px] text-slate-500 uppercase font-bold">Twoja Ranga</span>
-                </div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans pb-20">
+      <header className="relative pt-10 pb-24 px-4 bg-slate-900 rounded-b-[3rem] shadow-2xl text-center overflow-hidden">
+        <div className="max-w-2xl mx-auto relative z-10">
+          
+          {/* Badge i Wersja (Dla pewności odświeżenia) */}
+          <div className="flex flex-col items-center mb-8 gap-2">
+             <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 p-2 px-4 rounded-2xl">
+               <span className="text-xl">🔥 {streak}</span>
+               <div className="w-[1px] h-6 bg-white/10"></div>
+               <span className="text-amber-500 font-bold uppercase text-[10px] tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
+             </div>
+             <p className="text-[8px] text-white/20 uppercase tracking-[0.5em] font-black">V-AUDIO-TOP-STABLE</p>
           </div>
 
           <span className="px-5 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block">Słowo na {selectedDate}</span>
           
           {loading ? (
-            <div className="h-40 flex items-center justify-center italic text-slate-500">Otwieranie...</div>
+            <div className="py-20 text-slate-500 italic">Otwieranie księgi...</div>
           ) : currentVerse ? (
-            <div className="space-y-8 animate-fadeIn">
+            /* KONTENER FLEX Z WYMUSZONĄ KOLEJNOŚCIĄ */
+            <div className="flex flex-col items-center gap-8 animate-fadeIn">
               
-              {/* STYLIZOWANY ODTWARZACZ NAD TEKSTEM */}
+              {/* 1. PLAYER AUDIO (ORDER: 1) */}
               {currentVerse.audio_url && (
-                <div className="flex justify-center mb-10">
-                  <div className="w-full max-w-sm p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl flex items-center gap-4 transition-all hover:bg-white/10">
-                    <div className="w-12 h-12 flex min-w-[48px] items-center justify-center bg-gradient-to-br from-amber-500 to-orange-600 rounded-full text-white shadow-lg animate-pulse">
-                      <span className="ml-1 text-lg">▶️</span>
+                <div style={{ order: 1 }} className="w-full max-w-sm">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-4 rounded-[2rem] shadow-2xl flex items-center gap-4 transition-all hover:bg-white/10">
+                    <div className="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0">
+                      <span className="text-xl ml-1">▶️</span>
                     </div>
-                    <div className="flex flex-col w-full gap-1">
-                        <span className="text-[10px] uppercase font-black tracking-widest text-amber-500 text-left ml-1">Posłuchaj Słowa</span>
-                        <audio controls className="w-full h-8 accent-amber-500 custom-audio" src={currentVerse.audio_url} />
+                    <div className="flex-1">
+                       <p className="text-[9px] uppercase font-bold text-amber-500 tracking-widest mb-1 text-left ml-1">Posłuchaj Słowa</p>
+                       <audio 
+                         controls 
+                         className="w-full h-8 accent-amber-500" 
+                         src={currentVerse.audio_url}
+                         style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.5)' }}
+                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* TEKST WERSETU */}
-              <h1 className="text-4xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">"{currentVerse.verse_text}"</h1>
-              <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
+              {/* 2. TEKST WERSETU (ORDER: 2) */}
+              <div style={{ order: 2 }} className="space-y-6">
+                <h1 className="text-3xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">
+                  "{currentVerse.verse_text}"
+                </h1>
+                <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
+              </div>
+
             </div>
           ) : (
-            <div className="py-20 text-slate-500 text-xl italic">Brak zapisanego Słowa.</div>
+            <div className="py-20 text-slate-500 italic text-xl">Brak Słowa na ten dzień.</div>
           )}
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 -mt-16 relative z-20 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <aside className="lg:col-span-4 bg-slate-800/60 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl h-fit">
-          <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-3">📅 Archiwum</h3>
-          <input type="date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all" />
-        </aside>
+      <main className="max-w-4xl mx-auto px-4 -mt-10 relative z-20 space-y-6">
+        <section className="bg-slate-800/60 backdrop-blur-2xl p-6 rounded-[2.5rem] border border-white/10 shadow-2xl">
+          <h3 className="text-xl font-bold mb-4 text-white">📅 Archiwum</h3>
+          <input 
+            type="date" 
+            value={selectedDate} 
+            onChange={(e) => setSelectedDate(e.target.value)} 
+            className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all" 
+          />
+        </section>
 
-        <div className="lg:col-span-8 bg-slate-800/40 backdrop-blur-2xl p-8 md:p-12 rounded-[3rem] border border-white/5 shadow-2xl">
-          <h4 className="text-2xl font-bold text-white mb-10 flex justify-between font-serif">Refleksje <span className="text-xs bg-white/5 px-4 py-2 rounded-full text-amber-500">{comments.length} WPISÓW</span></h4>
+        <section className="bg-slate-800/40 backdrop-blur-2xl p-8 md:p-12 rounded-[3rem] border border-white/5 shadow-2xl">
+          <h4 className="text-2xl font-bold text-white mb-10 font-serif">Refleksje wspólnoty</h4>
           <div className="space-y-6 mb-12 max-h-[400px] overflow-y-auto pr-2 custom-scroll">
             {comments.map(c => (
-              <div key={c.id} className="p-6 rounded-[2rem] bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
-                <p className="text-slate-300 text-lg mb-4">{c.text}</p>
+              <div key={c.id} className="p-6 rounded-[2rem] bg-white/5 border border-white/5">
+                <p className="text-slate-300 text-lg mb-4 leading-relaxed">{c.text}</p>
                 <div className="flex justify-between text-[10px] font-black tracking-widest uppercase text-slate-500 border-t border-white/5 pt-4">
                   <span className="text-amber-600">✍️ {c.author}</span>
                   <span>{new Date(c.created_at).toLocaleDateString()}</span>
@@ -262,23 +159,14 @@ function App() {
             ))}
           </div>
           <div className="space-y-4 pt-8 border-t border-white/10">
-            <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 transition-all" />
-            <textarea placeholder="Twoja refleksja..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-6 rounded-3xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 min-h-[120px] resize-none transition-all" />
+            <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500" />
+            <textarea placeholder="Twoja refleksja..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-6 rounded-3xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 min-h-[120px] resize-none" />
             <button onClick={handleAddComment} className="w-full py-5 bg-amber-600 hover:bg-amber-500 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-xs shadow-lg active:scale-95">Udostępnij</button>
           </div>
-        </div>
+        </section>
       </main>
 
       <style>{`
-        /* WYMUSZENIE KOLORÓW DLA ODTWARZACZA */
-        audio.custom-audio::-webkit-media-controls-panel {
-          background-color: rgba(255, 255, 255, 0.05);
-        }
-        audio.custom-audio::-webkit-media-controls-current-time-display,
-        audio.custom-audio::-webkit-media-controls-time-remaining-display {
-          color: #f59e0b;
-        }
-
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
