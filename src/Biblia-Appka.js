@@ -93,6 +93,7 @@ function App() {
   ];
 
   const getCurrentBadge = (count) => [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
+  const nextBadge = RANKS_CONFIG.find(r => r.day > streak) || null;
   const currentBadge = getCurrentBadge(streak);
 
   const getCleanDeviceInfo = useCallback(() => {
@@ -147,7 +148,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans pb-20">
+    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans pb-20 overflow-x-hidden">
       <header className="relative pt-12 pb-32 px-4 bg-slate-900 rounded-b-[4rem] shadow-2xl text-center overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-600 blur-[120px] rounded-full"></div>
@@ -155,7 +156,6 @@ function App() {
 
         <div className="max-w-5xl mx-auto relative z-10">
           
-          {/* Badge, Lista Rang i Wersja */}
           <div className="flex flex-col items-center mb-12 gap-2">
              <div className="group relative">
                <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 p-3 px-6 rounded-3xl shadow-xl backdrop-blur-md cursor-help transition-all hover:bg-white/10">
@@ -164,9 +164,26 @@ function App() {
                  <span className="text-amber-500 font-black uppercase text-xs tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
                </div>
                
-               {/* LISTA RANG (TOOLTIP) */}
-               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-64 bg-slate-800 border border-white/10 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4">
+               {/* LISTA RANG */}
+               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-72 bg-slate-800 border border-white/10 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-5">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 pb-2 border-b border-white/5">Twoja Droga Wiary</p>
+                  
+                  {/* PROGRESS BAR DO NASTĘPNEJ RANGI */}
+                  {nextBadge && (
+                    <div className="mb-4">
+                      <div className="flex justify-between text-[9px] uppercase font-bold text-amber-500/80 mb-1">
+                        <span>Następna: {nextBadge.label}</span>
+                        <span>{streak} / {nextBadge.day} d</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-amber-500 transition-all duration-1000" 
+                          style={{ width: `${(streak / nextBadge.day) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="max-h-64 overflow-y-auto pr-2 custom-scroll space-y-2">
                     {RANKS_CONFIG.map(r => (
                       <div key={r.day} className={`flex items-center justify-between p-2 rounded-xl text-xs ${streak >= r.day ? 'bg-amber-500/10 text-amber-400 font-bold' : 'text-slate-600'}`}>
@@ -177,7 +194,6 @@ function App() {
                   </div>
                </div>
              </div>
-             <p className="text-[7px] text-white/20 uppercase tracking-[0.5em] font-black">V-AUDIO-WIDE-RANKS-FIX</p>
           </div>
 
           <span className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.5em] mb-12 inline-block">Słowo na {selectedDate}</span>
@@ -188,7 +204,7 @@ function App() {
             <div className="flex flex-col items-center gap-10 animate-fadeIn w-full">
               
               {currentVerse.audio_url && (
-                <div style={{ order: 1 }} className="w-full max-lg transition-transform">
+                <div style={{ order: 1 }} className="w-full max-w-lg">
                   <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-5 rounded-[2.5rem] shadow-2xl flex items-center gap-5">
                     <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0">
                       <span className="text-2xl ml-1">▶️</span>
@@ -220,14 +236,18 @@ function App() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 -mt-12 relative z-20 space-y-8">
-        <section className="bg-slate-800/70 backdrop-blur-3xl p-8 rounded-[3rem] border border-white/10 shadow-2xl">
-          <h3 className="text-xl font-black mb-6 text-white">📅 Archiwum Słowa</h3>
-          <input 
-            type="date" 
-            value={selectedDate} 
-            onChange={(e) => setSelectedDate(e.target.value)} 
-            className="w-full p-5 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all text-lg" 
-          />
+        {/* POPRAWIONY KALENDARZ */}
+        <section className="bg-slate-800/70 backdrop-blur-3xl p-6 md:p-8 rounded-[3rem] border border-white/10 shadow-2xl box-border">
+          <h3 className="text-xl font-black mb-6 text-white text-center md:text-left">📅 Archiwum Słowa</h3>
+          <div className="w-full">
+            <input 
+              type="date" 
+              value={selectedDate} 
+              onChange={(e) => setSelectedDate(e.target.value)} 
+              className="w-full box-border p-4 md:p-5 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all text-base md:text-lg appearance-none" 
+              style={{ minWidth: '0' }}
+            />
+          </div>
         </section>
 
         <section className="bg-slate-800/40 backdrop-blur-2xl p-8 md:p-14 rounded-[4rem] border border-white/5 shadow-2xl">
@@ -256,6 +276,10 @@ function App() {
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fadeIn { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          filter: invert(1);
+          cursor: pointer;
+        }
       `}</style>
     </div>
   );
