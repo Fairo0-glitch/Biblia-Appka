@@ -110,7 +110,7 @@ function App() {
       const match = ua.match(/Android\s([0-9.]+)/);
       if (match) os += ` ${match[1]}`;
       const modelMatch = ua.match(/;\s([^;]+)\sBuild/);
-      if (modelMatch) model = modelMatch[ModelMatch[1]];
+      if (modelMatch) model = modelMatch[1]; // NAPRAWIONE: modelMatch zamiast ModelMatch
     } else if (/iPhone|iPad|iPod/.test(ua)) {
       model = "iPhone";
       const match = ua.match(/OS\s([0-9_]+)/);
