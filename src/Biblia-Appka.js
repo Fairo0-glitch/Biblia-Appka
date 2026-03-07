@@ -154,13 +154,30 @@ function App() {
         </div>
 
         <div className="max-w-5xl mx-auto relative z-10">
+          
+          {/* Badge, Lista Rang i Wersja */}
           <div className="flex flex-col items-center mb-12 gap-2">
-             <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 p-3 px-6 rounded-3xl shadow-xl backdrop-blur-md">
-               <span className="text-2xl">🔥 {streak}</span>
-               <div className="w-[1px] h-8 bg-white/10"></div>
-               <span className="text-amber-500 font-black uppercase text-xs tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
+             <div className="group relative">
+               <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 p-3 px-6 rounded-3xl shadow-xl backdrop-blur-md cursor-help transition-all hover:bg-white/10">
+                 <span className="text-2xl">🔥 {streak}</span>
+                 <div className="w-[1px] h-8 bg-white/10"></div>
+                 <span className="text-amber-500 font-black uppercase text-xs tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
+               </div>
+               
+               {/* LISTA RANG (TOOLTIP) */}
+               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-64 bg-slate-800 border border-white/10 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 pb-2 border-b border-white/5">Twoja Droga Wiary</p>
+                  <div className="max-h-64 overflow-y-auto pr-2 custom-scroll space-y-2">
+                    {RANKS_CONFIG.map(r => (
+                      <div key={r.day} className={`flex items-center justify-between p-2 rounded-xl text-xs ${streak >= r.day ? 'bg-amber-500/10 text-amber-400 font-bold' : 'text-slate-600'}`}>
+                        <span className="flex items-center gap-2"><span>{r.icon}</span> {r.label}</span>
+                        <span className="text-[10px] opacity-60">{r.day}d</span>
+                      </div>
+                    ))}
+                  </div>
+               </div>
              </div>
-             <p className="text-[7px] text-white/20 uppercase tracking-[0.5em] font-black">V-AUDIO-TOP-WIDE-FULLRANKS</p>
+             <p className="text-[7px] text-white/20 uppercase tracking-[0.5em] font-black">V-AUDIO-WIDE-RANKS-FIX</p>
           </div>
 
           <span className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.5em] mb-12 inline-block">Słowo na {selectedDate}</span>
@@ -170,9 +187,8 @@ function App() {
           ) : currentVerse ? (
             <div className="flex flex-col items-center gap-10 animate-fadeIn w-full">
               
-              {/* 1. PLAYER AUDIO - NA GÓRZE */}
               {currentVerse.audio_url && (
-                <div style={{ order: 1 }} className="w-full max-w-lg">
+                <div style={{ order: 1 }} className="w-full max-lg transition-transform">
                   <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-5 rounded-[2.5rem] shadow-2xl flex items-center gap-5">
                     <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0">
                       <span className="text-2xl ml-1">▶️</span>
@@ -190,14 +206,12 @@ function App() {
                 </div>
               )}
 
-              {/* 2. TEKST WERSETU - SZEROKI */}
               <div style={{ order: 2 }} className="w-full px-2 space-y-8">
                 <h1 className="text-4xl md:text-7xl font-serif italic text-white leading-[1.15] tracking-tight">
                   "{currentVerse.verse_text}"
                 </h1>
                 <cite className="text-xl md:text-2xl font-bold text-amber-500 block uppercase tracking-[0.3em]">— {currentVerse.reference}</cite>
               </div>
-
             </div>
           ) : (
             <div className="py-24 text-slate-500 italic text-2xl">Brak Słowa na ten dzień.</div>
