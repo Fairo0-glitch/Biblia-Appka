@@ -17,7 +17,7 @@ function App() {
 
   const minDate2026 = "2026-01-01";
 
-  // PEŁNA LISTA 74 RANG CO 5 DNI - NIE USUWAĆ ŻADNEJ POZYCJI
+  // TWOJA PEŁNA LISTA RANG (CO 5 DNI) - PRZYWRÓCONA
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz Słowa", icon: "👂" },
@@ -95,23 +95,46 @@ function App() {
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
   ];
 
+  // NOWA FUNKCJA - 37 MOTYWÓW KOLORYSTYCZNYCH (CO 10 DNI)
   const getTheme = (count) => {
-    if (count >= 365) return { key: "gold", bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/50", aura: "bg-amber-500/30", btn: "bg-amber-600", card: "bg-amber-500/15" };
-    if (count >= 340) return { key: "white", bg: "bg-slate-900", accent: "text-slate-100", border: "border-slate-200/40", aura: "bg-slate-100/10", btn: "bg-slate-200 text-black", card: "bg-white/10" };
-    if (count >= 315) return { key: "silver", bg: "bg-zinc-900", accent: "text-zinc-400", border: "border-zinc-500/40", aura: "bg-zinc-500/20", btn: "bg-zinc-600", card: "bg-zinc-500/10" };
-    if (count >= 290) return { key: "brown", bg: "bg-[#1a0f00]", accent: "text-orange-200", border: "border-orange-900/50", aura: "bg-orange-900/20", btn: "bg-orange-900", card: "bg-orange-950/20" };
-    if (count >= 265) return { key: "rose", bg: "bg-rose-950", accent: "text-rose-300", border: "border-rose-500/40", aura: "bg-rose-500/20", btn: "bg-rose-700", card: "bg-rose-500/10" };
-    if (count >= 240) return { key: "fuchsia", bg: "bg-fuchsia-950", accent: "text-fuchsia-300", border: "border-fuchsia-500/40", aura: "bg-fuchsia-500/20", btn: "bg-fuchsia-700", card: "bg-fuchsia-500/10" };
-    if (count >= 215) return { key: "red", bg: "bg-red-950", accent: "text-red-400", border: "border-red-500/40", aura: "bg-red-500/20", btn: "bg-red-800", card: "bg-red-500/10" };
-    if (count >= 190) return { key: "orange", bg: "bg-orange-950", accent: "text-orange-400", border: "border-orange-500/40", aura: "bg-orange-500/20", btn: "bg-orange-700", card: "bg-orange-500/10" };
-    if (count >= 165) return { key: "yellow", bg: "bg-yellow-950", accent: "text-yellow-400", border: "border-yellow-500/40", aura: "bg-yellow-500/20", btn: "bg-yellow-700", card: "bg-yellow-500/10" };
-    if (count >= 140) return { key: "lime", bg: "bg-lime-950", accent: "text-lime-400", border: "border-lime-500/40", aura: "bg-lime-500/20", btn: "bg-lime-700", card: "bg-lime-500/10" };
-    if (count >= 115) return { key: "green", bg: "bg-green-950", accent: "text-green-400", border: "border-green-500/40", aura: "bg-green-500/20", btn: "bg-green-700", card: "bg-green-500/10" };
-    if (count >= 90) return { key: "teal", bg: "bg-teal-950", accent: "text-teal-400", border: "border-teal-500/40", aura: "bg-teal-500/20", btn: "bg-teal-700", card: "bg-teal-500/10" };
-    if (count >= 65) return { key: "cyan", bg: "bg-cyan-950", accent: "text-cyan-400", border: "border-cyan-500/40", aura: "bg-cyan-500/20", btn: "bg-cyan-700", card: "bg-cyan-500/10" };
-    if (count >= 40) return { key: "indigo", bg: "bg-indigo-950", accent: "text-indigo-400", border: "border-indigo-500/40", aura: "bg-indigo-500/20", btn: "bg-indigo-700", card: "bg-indigo-500/10" };
-    if (count >= 15) return { key: "blue", bg: "bg-blue-950", accent: "text-blue-400", border: "border-blue-500/40", aura: "bg-blue-500/20", btn: "bg-blue-700", card: "bg-blue-500/10" };
-    return { key: "sky", bg: "bg-sky-950", accent: "text-sky-300", border: "border-sky-500/30", aura: "bg-sky-400/10", btn: "bg-sky-700", card: "bg-sky-500/5" };
+    if (count >= 360) return { bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/50", aura: "bg-amber-500/30", btn: "bg-amber-600", card: "bg-amber-500/15" };
+    if (count >= 350) return { bg: "bg-amber-900", accent: "text-amber-300", border: "border-amber-400/40", aura: "bg-amber-400/20", btn: "bg-amber-500", card: "bg-amber-400/10" };
+    if (count >= 340) return { bg: "bg-slate-900", accent: "text-slate-100", border: "border-slate-200/50", aura: "bg-slate-100/10", btn: "bg-slate-300 text-black", card: "bg-white/10" };
+    if (count >= 330) return { bg: "bg-slate-950", accent: "text-slate-300", border: "border-slate-500/40", aura: "bg-slate-500/10", btn: "bg-slate-700", card: "bg-slate-500/5" };
+    if (count >= 320) return { bg: "bg-zinc-800", accent: "text-zinc-200", border: "border-zinc-400/40", aura: "bg-zinc-200/10", btn: "bg-zinc-500", card: "bg-zinc-200/5" };
+    if (count >= 310) return { bg: "bg-zinc-900", accent: "text-zinc-400", border: "border-zinc-600/40", aura: "bg-zinc-400/10", btn: "bg-zinc-700", card: "bg-zinc-600/5" };
+    if (count >= 300) return { bg: "bg-zinc-950", accent: "text-zinc-500", border: "border-zinc-700/40", aura: "bg-zinc-500/10", btn: "bg-zinc-800", card: "bg-zinc-700/5" };
+    if (count >= 290) return { bg: "bg-[#1a0f00]", accent: "text-orange-300", border: "border-orange-800/40", aura: "bg-orange-800/20", btn: "bg-orange-700", card: "bg-orange-800/10" };
+    if (count >= 280) return { bg: "bg-[#2d1a00]", accent: "text-orange-400", border: "border-orange-700/40", aura: "bg-orange-700/20", btn: "bg-orange-600", card: "bg-orange-700/10" };
+    if (count >= 270) return { bg: "bg-[#452a00]", accent: "text-orange-500", border: "border-orange-600/40", aura: "bg-orange-600/20", btn: "bg-orange-500", card: "bg-orange-600/10" };
+    if (count >= 260) return { bg: "bg-rose-900", accent: "text-rose-200", border: "border-rose-700/40", aura: "bg-rose-700/20", btn: "bg-rose-600", card: "bg-rose-700/10" };
+    if (count >= 250) return { bg: "bg-rose-950", accent: "text-rose-400", border: "border-rose-500/40", aura: "bg-rose-500/20", btn: "bg-rose-800", card: "bg-rose-500/10" };
+    if (count >= 240) return { bg: "bg-fuchsia-900", accent: "text-fuchsia-200", border: "border-fuchsia-700/40", aura: "bg-fuchsia-700/20", btn: "bg-fuchsia-600", card: "bg-fuchsia-700/10" };
+    if (count >= 230) return { bg: "bg-fuchsia-950", accent: "text-fuchsia-400", border: "border-fuchsia-500/40", aura: "bg-fuchsia-500/20", btn: "bg-fuchsia-800", card: "bg-fuchsia-500/10" };
+    if (count >= 220) return { bg: "bg-red-900", accent: "text-red-200", border: "border-red-700/40", aura: "bg-red-700/20", btn: "bg-red-600", card: "bg-red-700/10" };
+    if (count >= 210) return { bg: "bg-red-950", accent: "text-red-400", border: "border-red-500/40", aura: "bg-red-500/20", btn: "bg-red-800", card: "bg-red-500/10" };
+    if (count >= 200) return { bg: "bg-orange-900", accent: "text-orange-300", border: "border-orange-700/40", aura: "bg-orange-700/20", btn: "bg-orange-600", card: "bg-orange-700/10" };
+    if (count >= 190) return { bg: "bg-orange-950", accent: "text-orange-400", border: "border-orange-500/40", aura: "bg-orange-500/20", btn: "bg-orange-800", card: "bg-orange-500/10" };
+    if (count >= 180) return { bg: "bg-yellow-800", accent: "text-yellow-200", border: "border-yellow-600/40", aura: "bg-yellow-600/20", btn: "bg-yellow-500", card: "bg-yellow-600/10" };
+    if (count >= 170) return { bg: "bg-yellow-900", accent: "text-yellow-300", border: "border-yellow-500/40", aura: "bg-yellow-500/20", btn: "bg-yellow-600", card: "bg-yellow-500/10" };
+    if (count >= 160) return { bg: "bg-yellow-950", accent: "text-yellow-500", border: "border-yellow-400/40", aura: "bg-yellow-400/20", btn: "bg-yellow-700", card: "bg-yellow-400/10" };
+    if (count >= 150) return { bg: "bg-lime-800", accent: "text-lime-200", border: "border-lime-600/40", aura: "bg-lime-600/20", btn: "bg-lime-500", card: "bg-lime-600/10" };
+    if (count >= 140) return { bg: "bg-lime-900", accent: "text-lime-300", border: "border-lime-500/40", aura: "bg-lime-500/20", btn: "bg-lime-600", card: "bg-lime-500/10" };
+    if (count >= 130) return { bg: "bg-lime-950", accent: "text-lime-500", border: "border-lime-400/40", aura: "bg-lime-400/20", btn: "bg-lime-800", card: "bg-lime-400/10" };
+    if (count >= 120) return { bg: "bg-green-800", accent: "text-green-200", border: "border-green-600/40", aura: "bg-green-600/20", btn: "bg-green-500", card: "bg-green-600/10" };
+    if (count >= 110) return { bg: "bg-green-900", accent: "text-green-300", border: "border-green-500/40", aura: "bg-green-500/20", btn: "bg-green-600", card: "bg-green-500/10" };
+    if (count >= 100) return { bg: "bg-green-950", accent: "text-green-500", border: "border-green-400/40", aura: "bg-green-400/20", btn: "bg-green-800", card: "bg-green-400/10" };
+    if (count >= 90) return { bg: "bg-teal-800", accent: "text-teal-200", border: "border-teal-600/40", aura: "bg-teal-600/20", btn: "bg-teal-500", card: "bg-teal-600/10" };
+    if (count >= 80) return { bg: "bg-teal-900", accent: "text-teal-300", border: "border-teal-500/40", aura: "bg-teal-500/20", btn: "bg-teal-600", card: "bg-teal-500/10" };
+    if (count >= 70) return { bg: "bg-teal-950", accent: "text-teal-500", border: "border-teal-400/40", aura: "bg-teal-400/20", btn: "bg-teal-800", card: "bg-teal-400/10" };
+    if (count >= 60) return { bg: "bg-cyan-900", accent: "text-cyan-300", border: "border-cyan-600/40", aura: "bg-cyan-600/20", btn: "bg-cyan-500", card: "bg-cyan-600/10" };
+    if (count >= 50) return { bg: "bg-cyan-950", accent: "text-cyan-500", border: "border-cyan-500/40", aura: "bg-cyan-500/20", btn: "bg-cyan-700", card: "bg-cyan-500/10" };
+    if (count >= 40) return { bg: "bg-indigo-900", accent: "text-indigo-300", border: "border-indigo-600/40", aura: "bg-indigo-600/20", btn: "bg-indigo-500", card: "bg-indigo-600/10" };
+    if (count >= 30) return { bg: "bg-indigo-950", accent: "text-indigo-500", border: "border-indigo-500/40", aura: "bg-indigo-500/20", btn: "bg-indigo-700", card: "bg-indigo-500/10" };
+    if (count >= 20) return { bg: "bg-blue-900", accent: "text-blue-300", border: "border-blue-600/40", aura: "bg-blue-600/20", btn: "bg-blue-500", card: "bg-blue-600/10" };
+    if (count >= 10) return { bg: "bg-blue-950", accent: "text-blue-500", border: "border-blue-500/40", aura: "bg-blue-500/20", btn: "bg-blue-700", card: "bg-blue-500/10" };
+    // START (0-9 DNI)
+    return { bg: "bg-sky-950", accent: "text-sky-300", border: "border-sky-500/30", aura: "bg-sky-400/10", btn: "bg-sky-700", card: "bg-sky-500/5" };
   };
 
   const theme = getTheme(streak);
@@ -239,7 +262,7 @@ function App() {
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-12">
                    <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4 uppercase">Głos Słowa</p>
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all hover:bg-white/10 transition-all">
                     <div className={`w-10 h-10 ${theme.btn} rounded-full flex items-center justify-center text-white shrink-0 shadow-lg`}>
                       <span className="text-lg ml-0.5">▶️</span>
                     </div>
