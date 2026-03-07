@@ -15,6 +15,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [streak, setStreak] = useState(() => parseInt(localStorage.getItem('streakCount') || "0"));
 
+  const minDate2026 = "2026-01-01";
+
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz Słowa", icon: "👂" },
@@ -103,23 +105,20 @@ function App() {
     let model = "Urządzenie";
     let os = "OS";
     let browser = "Przeglądarka";
-
     if (/android/i.test(ua)) {
       os = "Android";
       const match = ua.match(/Android\s([0-9.]+)/);
       if (match) os += ` ${match[1]}`;
       const modelMatch = ua.match(/;\s([^;]+)\sBuild/);
-      if (modelMatch) model = modelMatch[1];
+      if (modelMatch) model = modelMatch[ModelMatch[1]];
     } else if (/iPhone|iPad|iPod/.test(ua)) {
       model = "iPhone";
       const match = ua.match(/OS\s([0-9_]+)/);
       if (match) os = `iOS ${match[1].replace(/_/g, '.')}`;
     }
-
     if (/chrome|crios/i.test(ua)) browser = "Chrome";
     else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
     else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
-
     return `${model} | ${os} | ${browser} | Screen: ${w}x${h}`;
   }, []);
 
@@ -217,7 +216,6 @@ function App() {
             <div className="py-16 text-slate-500 italic animate-pulse">Wczytywanie...</div>
           ) : currentVerse ? (
             <div className="flex flex-col items-center animate-fadeIn">
-              
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-10">
                    <p className="text-[10px] uppercase font-black text-amber-500/80 tracking-[0.2em] mb-4">Posłuchaj Słowa Życia</p>
@@ -226,24 +224,15 @@ function App() {
                       <span className="text-lg ml-0.5">▶️</span>
                     </div>
                     <div className="flex-1">
-                       <audio 
-                         controls 
-                         className="w-full h-7 accent-amber-500" 
-                         src={currentVerse.audio_url}
-                         style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.3)' }}
-                       />
+                       <audio controls className="w-full h-7 accent-amber-500" src={currentVerse.audio_url} style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.3)' }} />
                     </div>
                   </div>
                 </div>
               )}
-
               <div className="space-y-6">
-                <h1 className="text-3xl md:text-5xl font-serif italic text-white leading-tight px-4 tracking-tight">
-                  "{currentVerse.verse_text}"
-                </h1>
+                <h1 className="text-3xl md:text-5xl font-serif italic text-white leading-tight px-4 tracking-tight">"{currentVerse.verse_text}"</h1>
                 <cite className="text-lg font-bold text-amber-500 block uppercase tracking-widest opacity-90">— {currentVerse.reference}</cite>
               </div>
-
             </div>
           ) : (
             <div className="py-20 text-slate-500 italic">Czekanie na Słowo...</div>
@@ -256,6 +245,7 @@ function App() {
           <h3 className="text-sm font-black mb-4 text-white uppercase tracking-widest">📅 Wybierz dzień roku</h3>
           <input 
             type="date" 
+            min={minDate2026}
             value={selectedDate} 
             onChange={(e) => setSelectedDate(e.target.value)} 
             className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all appearance-none" 
@@ -264,7 +254,7 @@ function App() {
         </section>
 
         <section className="bg-slate-800/40 backdrop-blur-2xl p-6 md:p-10 rounded-[3rem] border border-white/5 shadow-2xl">
-          <h4 className="text-xl font-serif text-white mb-8 text-center">Refleksje wspólnoty</h4>
+          <h4 className="text-xl font-serif text-white mb-8 text-center">Refleksje</h4>
           <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scroll">
             {comments.map(c => (
               <div key={c.id} className="p-6 rounded-[2rem] bg-white/5 border border-white/5">
