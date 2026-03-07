@@ -19,7 +19,77 @@ function App() {
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz", icon: "👂" },
     { day: 10, label: "Uczeń", icon: "📖" },
-    { day: 365, label: "Zwycięzca", icon: "🏆" }
+    { day: 15, label: "Pielgrzym", icon: "🥾" },
+    { day: 20, label: "Świadek", icon: "🕊️" },
+    { day: 25, label: "Gorliwy", icon: "🔥" },
+    { day: 30, label: "Wojownik Światła", icon: "⚔️" },
+    { day: 35, label: "Lektor", icon: "🎙️" },
+    { day: 40, label: "Akolita", icon: "🕯️" },
+    { day: 45, label: "Katechista", icon: "📜" },
+    { day: 50, label: "Ewangelizator", icon: "📣" },
+    { day: 55, label: "Pasterz Serca", icon: "🐑" },
+    { day: 60, label: "Obrońca Wiary", icon: "🛡️" },
+    { day: 65, label: "Kontemplator", icon: "🧘" },
+    { day: 70, label: "Mistyk", icon: "✨" },
+    { day: 75, label: "Misjonarz", icon: "🌍" },
+    { day: 80, label: "Pustelnik", icon: "🏔️" },
+    { day: 85, label: "Wyznawca", icon: "🙏" },
+    { day: 90, label: "Mędrzec Duchowy", icon: "👴" },
+    { day: 95, label: "Teolog", icon: "🧠" },
+    { day: 100, label: "Doktor Kościoła", icon: "🏛️" },
+    { day: 105, label: "Nowicjusz", icon: "🌿" },
+    { day: 110, label: "Zakonnik", icon: "⛪" },
+    { day: 115, label: "Opat", icon: "🗝️" },
+    { day: 120, label: "Kanonik", icon: "📙" },
+    { day: 125, label: "Pustelnik Karmelu", icon: "🌋" },
+    { day: 130, label: "Rycerz Niepokalanej", icon: "🛡️" },
+    { day: 135, label: "Sługa Boży", icon: "🙇" },
+    { day: 140, label: "Czciciel Słowa", icon: "💖" },
+    { day: 145, label: "Głos na Pustyni", icon: "🌵" },
+    { day: 150, label: "Syn Światłości", icon: "☀️" },
+    { day: 155, label: "Stróż Poranka", icon: "🌅" },
+    { day: 160, label: "Niosący Nadzieję", icon: "⚓" },
+    { day: 165, label: "Budowniczy Arki", icon: "🔨" },
+    { day: 170, label: "Przyjaciel Oblubieńca", icon: "💍" },
+    { day: 175, label: "Szafarz Łaski", icon: "🍷" },
+    { day: 180, label: "Męczennik Codzienności", icon: "🥀" },
+    { day: 185, label: "Wędrowiec Pański", icon: "🚶" },
+    { day: 190, label: "Ogrodnik Wiary", icon: "🌱" },
+    { day: 195, label: "Rybak Ludzi", icon: "🎣" },
+    { day: 200, label: "Apostoł Narodów", icon: "🚢" },
+    { day: 205, label: "Świadek Nadziei", icon: "🌅" },
+    { day: 210, label: "Strażnik Tradycji", icon: "📚" },
+    { day: 215, label: "Filadelfijczyk", icon: "🤝" },
+    { day: 220, label: "Wierny Efezczyk", icon: "🏰" },
+    { day: 225, label: "Mieszkaniec Syjonu", icon: "⛰️" },
+    { day: 230, label: "Dziedzic Obietnicy", icon: "📜" },
+    { day: 235, label: "Potomek Abrahama", icon: "🌌" },
+    { day: 240, label: "Widzący Boga", icon: "👁️" },
+    { day: 245, label: "Pokorny Sługa", icon: "🧹" },
+    { day: 250, label: "Zwiastun Pokoju", icon: "🕊️" },
+    { day: 255, label: "Mąż Sprawiedliwy", icon: "⚖️" },
+    { day: 260, label: "Naczynie Wybrane", icon: "🏺" },
+    { day: 265, label: "Sól Ziemi", icon: "🧂" },
+    { day: 270, label: "Światłość Świata", icon: "🏙️" },
+    { day: 275, label: "Latorośl Winna", icon: "🍇" },
+    { day: 280, label: "Ziarno Dobrej Ziemi", icon: "🌾" },
+    { day: 285, label: "Słup Ognisty", icon: "🔥" },
+    { day: 290, label: "Głos Proroka", icon: "📢" },
+    { day: 295, label: "Widzący Chwałę", icon: "🌈" },
+    { day: 300, label: "Towarzysz Aniołów", icon: "👼" },
+    { day: 305, label: "Domownik Boga", icon: "🏠" },
+    { day: 310, label: "Mieszkaniec Przybytku", icon: "⛺" },
+    { day: 315, label: "Współdziedzic", icon: "💎" },
+    { day: 320, label: "Dziecko Boże", icon: "👶" },
+    { day: 325, label: "Przyjaciel Jezusa", icon: "🤝" },
+    { day: 330, label: "Umiłowany Uczeń", icon: "💓" },
+    { day: 335, label: "Wybraniec Niebios", icon: "⭐" },
+    { day: 340, label: "Patriarcha Nowy", icon: "👴" },
+    { day: 345, label: "Strażnik Bram", icon: "🗝️" },
+    { day: 350, label: "Sługa Wierny", icon: "👑" },
+    { day: 355, label: "Gość Baranka", icon: "🍷" },
+    { day: 360, label: "Dziedzic Królestwa", icon: "🏰" },
+    { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
   ];
 
   const getCurrentBadge = (count) => [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
@@ -78,39 +148,40 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans pb-20">
-      <header className="relative pt-10 pb-24 px-4 bg-slate-900 rounded-b-[3rem] shadow-2xl text-center overflow-hidden">
-        <div className="max-w-2xl mx-auto relative z-10">
-          
-          {/* Badge i Wersja (Dla pewności odświeżenia) */}
-          <div className="flex flex-col items-center mb-8 gap-2">
-             <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 p-2 px-4 rounded-2xl">
-               <span className="text-xl">🔥 {streak}</span>
-               <div className="w-[1px] h-6 bg-white/10"></div>
-               <span className="text-amber-500 font-bold uppercase text-[10px] tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
+      <header className="relative pt-12 pb-32 px-4 bg-slate-900 rounded-b-[4rem] shadow-2xl text-center overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-600 blur-[120px] rounded-full"></div>
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="flex flex-col items-center mb-12 gap-2">
+             <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 p-3 px-6 rounded-3xl shadow-xl backdrop-blur-md">
+               <span className="text-2xl">🔥 {streak}</span>
+               <div className="w-[1px] h-8 bg-white/10"></div>
+               <span className="text-amber-500 font-black uppercase text-xs tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
              </div>
-             <p className="text-[8px] text-white/20 uppercase tracking-[0.5em] font-black">V-AUDIO-TOP-STABLE</p>
+             <p className="text-[7px] text-white/20 uppercase tracking-[0.5em] font-black">V-AUDIO-TOP-WIDE-FULLRANKS</p>
           </div>
 
-          <span className="px-5 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block">Słowo na {selectedDate}</span>
+          <span className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.5em] mb-12 inline-block">Słowo na {selectedDate}</span>
           
           {loading ? (
-            <div className="py-20 text-slate-500 italic">Otwieranie księgi...</div>
+            <div className="py-20 text-slate-500 italic text-xl animate-pulse">Otwieranie księgi...</div>
           ) : currentVerse ? (
-            /* KONTENER FLEX Z WYMUSZONĄ KOLEJNOŚCIĄ */
-            <div className="flex flex-col items-center gap-8 animate-fadeIn">
+            <div className="flex flex-col items-center gap-10 animate-fadeIn w-full">
               
-              {/* 1. PLAYER AUDIO (ORDER: 1) */}
+              {/* 1. PLAYER AUDIO - NA GÓRZE */}
               {currentVerse.audio_url && (
-                <div style={{ order: 1 }} className="w-full max-w-sm">
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-4 rounded-[2rem] shadow-2xl flex items-center gap-4 transition-all hover:bg-white/10">
-                    <div className="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0">
-                      <span className="text-xl ml-1">▶️</span>
+                <div style={{ order: 1 }} className="w-full max-w-lg">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-5 rounded-[2.5rem] shadow-2xl flex items-center gap-5">
+                    <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0">
+                      <span className="text-2xl ml-1">▶️</span>
                     </div>
-                    <div className="flex-1">
-                       <p className="text-[9px] uppercase font-bold text-amber-500 tracking-widest mb-1 text-left ml-1">Posłuchaj Słowa</p>
+                    <div className="flex-1 text-left">
+                       <p className="text-[10px] uppercase font-black text-amber-500 tracking-[0.2em] mb-1 ml-1">Posłuchaj Słowa</p>
                        <audio 
                          controls 
-                         className="w-full h-8 accent-amber-500" 
+                         className="w-full h-10 accent-amber-500" 
                          src={currentVerse.audio_url}
                          style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.5)' }}
                        />
@@ -119,49 +190,49 @@ function App() {
                 </div>
               )}
 
-              {/* 2. TEKST WERSETU (ORDER: 2) */}
-              <div style={{ order: 2 }} className="space-y-6">
-                <h1 className="text-3xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">
+              {/* 2. TEKST WERSETU - SZEROKI */}
+              <div style={{ order: 2 }} className="w-full px-2 space-y-8">
+                <h1 className="text-4xl md:text-7xl font-serif italic text-white leading-[1.15] tracking-tight">
                   "{currentVerse.verse_text}"
                 </h1>
-                <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
+                <cite className="text-xl md:text-2xl font-bold text-amber-500 block uppercase tracking-[0.3em]">— {currentVerse.reference}</cite>
               </div>
 
             </div>
           ) : (
-            <div className="py-20 text-slate-500 italic text-xl">Brak Słowa na ten dzień.</div>
+            <div className="py-24 text-slate-500 italic text-2xl">Brak Słowa na ten dzień.</div>
           )}
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 -mt-10 relative z-20 space-y-6">
-        <section className="bg-slate-800/60 backdrop-blur-2xl p-6 rounded-[2.5rem] border border-white/10 shadow-2xl">
-          <h3 className="text-xl font-bold mb-4 text-white">📅 Archiwum</h3>
+      <main className="max-w-6xl mx-auto px-4 -mt-12 relative z-20 space-y-8">
+        <section className="bg-slate-800/70 backdrop-blur-3xl p-8 rounded-[3rem] border border-white/10 shadow-2xl">
+          <h3 className="text-xl font-black mb-6 text-white">📅 Archiwum Słowa</h3>
           <input 
             type="date" 
             value={selectedDate} 
             onChange={(e) => setSelectedDate(e.target.value)} 
-            className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all" 
+            className="w-full p-5 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all text-lg" 
           />
         </section>
 
-        <section className="bg-slate-800/40 backdrop-blur-2xl p-8 md:p-12 rounded-[3rem] border border-white/5 shadow-2xl">
-          <h4 className="text-2xl font-bold text-white mb-10 font-serif">Refleksje wspólnoty</h4>
-          <div className="space-y-6 mb-12 max-h-[400px] overflow-y-auto pr-2 custom-scroll">
+        <section className="bg-slate-800/40 backdrop-blur-2xl p-8 md:p-14 rounded-[4rem] border border-white/5 shadow-2xl">
+          <h4 className="text-3xl font-serif text-white mb-12">Refleksje wspólnoty</h4>
+          <div className="grid grid-cols-1 gap-6 mb-12 max-h-[500px] overflow-y-auto pr-4 custom-scroll">
             {comments.map(c => (
-              <div key={c.id} className="p-6 rounded-[2rem] bg-white/5 border border-white/5">
-                <p className="text-slate-300 text-lg mb-4 leading-relaxed">{c.text}</p>
-                <div className="flex justify-between text-[10px] font-black tracking-widest uppercase text-slate-500 border-t border-white/5 pt-4">
+              <div key={c.id} className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5">
+                <p className="text-slate-200 text-xl mb-6 leading-relaxed font-light italic">"{c.text}"</p>
+                <div className="flex justify-between text-[11px] font-black tracking-widest uppercase text-slate-500 border-t border-white/5 pt-6">
                   <span className="text-amber-600">✍️ {c.author}</span>
                   <span>{new Date(c.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
             ))}
           </div>
-          <div className="space-y-4 pt-8 border-t border-white/10">
-            <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500" />
-            <textarea placeholder="Twoja refleksja..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-6 rounded-3xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 min-h-[120px] resize-none" />
-            <button onClick={handleAddComment} className="w-full py-5 bg-amber-600 hover:bg-amber-500 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-xs shadow-lg active:scale-95">Udostępnij</button>
+          <div className="space-y-5 pt-10 border-t border-white/10">
+            <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-5 rounded-2xl bg-slate-900 border border-white/10 text-white text-lg outline-none focus:border-amber-500" />
+            <textarea placeholder="Twoja refleksja..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-7 rounded-3xl bg-slate-900 border border-white/10 text-white text-lg outline-none focus:border-amber-500 min-h-[150px] resize-none" />
+            <button onClick={handleAddComment} className="w-full py-6 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black rounded-3xl transition-all uppercase tracking-[0.2em] text-sm shadow-xl active:scale-95">Udostępnij Słowo</button>
           </div>
         </section>
       </main>
@@ -169,8 +240,8 @@ function App() {
       <style>{`
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       `}</style>
     </div>
   );
