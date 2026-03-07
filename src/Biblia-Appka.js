@@ -215,17 +215,24 @@ function App() {
           {loading ? (
             <div className="h-40 flex items-center justify-center italic text-slate-500">Otwieranie...</div>
           ) : currentVerse ? (
-            <div className="space-y-6 animate-fadeIn">
-              {/* NOWY PLAYER */}
+            <div className="space-y-8 animate-fadeIn">
+              
+              {/* STYLIZOWANY ODTWARZACZ NAD TEKSTEM */}
               {currentVerse.audio_url && (
-                <div className="flex justify-center">
-                  <div className="w-full max-w-sm p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl flex items-center gap-4">
-                    <div className="w-10 h-10 flex items-center justify-center bg-amber-600 rounded-full text-white shadow-lg">▶️</div>
-                    <audio controls className="w-full h-8 accent-amber-500" src={currentVerse.audio_url} />
+                <div className="flex justify-center mb-10">
+                  <div className="w-full max-w-sm p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl flex items-center gap-4 transition-all hover:bg-white/10">
+                    <div className="w-12 h-12 flex min-w-[48px] items-center justify-center bg-gradient-to-br from-amber-500 to-orange-600 rounded-full text-white shadow-lg animate-pulse">
+                      <span className="ml-1 text-lg">▶️</span>
+                    </div>
+                    <div className="flex flex-col w-full gap-1">
+                        <span className="text-[10px] uppercase font-black tracking-widest text-amber-500 text-left ml-1">Posłuchaj Słowa</span>
+                        <audio controls className="w-full h-8 accent-amber-500 custom-audio" src={currentVerse.audio_url} />
+                    </div>
                   </div>
                 </div>
               )}
-              {/* TEKST POD PLAYEREM */}
+
+              {/* TEKST WERSETU */}
               <h1 className="text-4xl md:text-6xl font-serif italic text-white leading-tight px-4 tracking-tight">"{currentVerse.verse_text}"</h1>
               <cite className="text-xl font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
             </div>
@@ -263,6 +270,15 @@ function App() {
       </main>
 
       <style>{`
+        /* WYMUSZENIE KOLORÓW DLA ODTWARZACZA */
+        audio.custom-audio::-webkit-media-controls-panel {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+        audio.custom-audio::-webkit-media-controls-current-time-display,
+        audio.custom-audio::-webkit-media-controls-time-remaining-display {
+          color: #f59e0b;
+        }
+
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
