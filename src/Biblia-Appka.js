@@ -93,7 +93,7 @@ function App() {
   ];
 
   const getCurrentBadge = (count) => [...RANKS_CONFIG].reverse().find(r => count >= r.day) || RANKS_CONFIG[0];
-  const nextBadge = RANKS_CONFIG.find(r => r.day > streak) || null;
+  const nextBadge = RANKS_CONFIG.find(r => r.day > streak);
   const currentBadge = getCurrentBadge(streak);
 
   const getCleanDeviceInfo = useCallback(() => {
@@ -149,46 +149,38 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans pb-20 overflow-x-hidden">
-      <header className="relative pt-12 pb-32 px-4 bg-slate-900 rounded-b-[4rem] shadow-2xl text-center overflow-hidden">
+      <header className="relative pt-10 pb-28 px-4 bg-slate-900 rounded-b-[3.5rem] shadow-2xl text-center">
         <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-600 blur-[120px] rounded-full"></div>
+          <div className="absolute top-[-20%] left-[-10%] w-64 h-64 bg-amber-600 blur-[100px] rounded-full"></div>
         </div>
 
-        <div className="max-w-5xl mx-auto relative z-10">
-          
-          <div className="flex flex-col items-center mb-12 gap-2">
+        <div className="max-w-2xl mx-auto relative z-10">
+          <div className="flex flex-col items-center mb-10 gap-2">
              <div className="group relative">
-               <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 p-3 px-6 rounded-3xl shadow-xl backdrop-blur-md cursor-help transition-all hover:bg-white/10">
-                 <span className="text-2xl">🔥 {streak}</span>
-                 <div className="w-[1px] h-8 bg-white/10"></div>
-                 <span className="text-amber-500 font-black uppercase text-xs tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
+               <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 p-2 px-4 rounded-2xl shadow-xl backdrop-blur-md cursor-help">
+                 <span className="text-xl">🔥 {streak}</span>
+                 <div className="w-[1px] h-6 bg-white/10"></div>
+                 <span className="text-amber-500 font-black uppercase text-[10px] tracking-widest">{currentBadge.icon} {currentBadge.label}</span>
                </div>
                
-               {/* LISTA RANG */}
-               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-72 bg-slate-800 border border-white/10 rounded-[2rem] shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 pb-2 border-b border-white/5">Twoja Droga Wiary</p>
-                  
-                  {/* PROGRESS BAR DO NASTĘPNEJ RANGI */}
+               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-slate-800 border border-white/10 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3">Droga 2026</p>
                   {nextBadge && (
-                    <div className="mb-4">
-                      <div className="flex justify-between text-[9px] uppercase font-bold text-amber-500/80 mb-1">
+                    <div className="mb-4 text-left">
+                      <div className="flex justify-between text-[8px] font-bold text-amber-500/80 mb-1 uppercase">
                         <span>Następna: {nextBadge.label}</span>
-                        <span>{streak} / {nextBadge.day} d</span>
+                        <span>{streak}/{nextBadge.day}d</span>
                       </div>
-                      <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-amber-500 transition-all duration-1000" 
-                          style={{ width: `${(streak / nextBadge.day) * 100}%` }}
-                        ></div>
+                      <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-amber-500 transition-all" style={{ width: `${(streak/nextBadge.day)*100}%` }}></div>
                       </div>
                     </div>
                   )}
-
-                  <div className="max-h-64 overflow-y-auto pr-2 custom-scroll space-y-2">
+                  <div className="max-h-56 overflow-y-auto pr-1 custom-scroll space-y-1">
                     {RANKS_CONFIG.map(r => (
-                      <div key={r.day} className={`flex items-center justify-between p-2 rounded-xl text-xs ${streak >= r.day ? 'bg-amber-500/10 text-amber-400 font-bold' : 'text-slate-600'}`}>
+                      <div key={r.day} className={`flex items-center justify-between p-1.5 rounded-lg text-[10px] ${streak >= r.day ? 'bg-amber-500/10 text-amber-400 font-bold' : 'text-slate-600'}`}>
                         <span className="flex items-center gap-2"><span>{r.icon}</span> {r.label}</span>
-                        <span className="text-[10px] opacity-60">{r.day}d</span>
+                        <span>{r.day}d</span>
                       </div>
                     ))}
                   </div>
@@ -196,90 +188,84 @@ function App() {
              </div>
           </div>
 
-          <span className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.5em] mb-12 inline-block">Słowo na {selectedDate}</span>
+          <span className="px-5 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block">Słowo na 2026 • {selectedDate}</span>
           
           {loading ? (
-            <div className="py-20 text-slate-500 italic text-xl animate-pulse">Otwieranie księgi...</div>
+            <div className="py-16 text-slate-500 italic animate-pulse">Wczytywanie...</div>
           ) : currentVerse ? (
-            <div className="flex flex-col items-center gap-10 animate-fadeIn w-full">
+            <div className="flex flex-col items-center animate-fadeIn">
               
+              {/* AUDIO NA GÓRZE - KLASYCZNA STRUKTURA */}
               {currentVerse.audio_url && (
-                <div style={{ order: 1 }} className="w-full max-w-lg">
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-2xl p-5 rounded-[2.5rem] shadow-2xl flex items-center gap-5">
-                    <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0">
-                      <span className="text-2xl ml-1">▶️</span>
+                <div className="w-full max-w-sm mb-10">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4">
+                    <div className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white shrink-0">
+                      <span className="text-lg ml-0.5">▶️</span>
                     </div>
-                    <div className="flex-1 text-left">
-                       <p className="text-[10px] uppercase font-black text-amber-500 tracking-[0.2em] mb-1 ml-1">Posłuchaj Słowa</p>
+                    <div className="flex-1">
                        <audio 
                          controls 
-                         className="w-full h-10 accent-amber-500" 
+                         className="w-full h-7 accent-amber-500" 
                          src={currentVerse.audio_url}
-                         style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.5)' }}
+                         style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.3)' }}
                        />
                     </div>
                   </div>
                 </div>
               )}
 
-              <div style={{ order: 2 }} className="w-full px-2 space-y-8">
-                <h1 className="text-4xl md:text-7xl font-serif italic text-white leading-[1.15] tracking-tight">
+              <div className="space-y-6">
+                <h1 className="text-3xl md:text-5xl font-serif italic text-white leading-tight px-4">
                   "{currentVerse.verse_text}"
                 </h1>
-                <cite className="text-xl md:text-2xl font-bold text-amber-500 block uppercase tracking-[0.3em]">— {currentVerse.reference}</cite>
+                <cite className="text-lg font-bold text-amber-500 block uppercase tracking-widest">— {currentVerse.reference}</cite>
               </div>
+
             </div>
           ) : (
-            <div className="py-24 text-slate-500 italic text-2xl">Brak Słowa na ten dzień.</div>
+            <div className="py-20 text-slate-500 italic">Brak zapisów.</div>
           )}
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 -mt-12 relative z-20 space-y-8">
-        {/* POPRAWIONY KALENDARZ */}
-        <section className="bg-slate-800/70 backdrop-blur-3xl p-6 md:p-8 rounded-[3rem] border border-white/10 shadow-2xl box-border">
-          <h3 className="text-xl font-black mb-6 text-white text-center md:text-left">📅 Archiwum Słowa</h3>
-          <div className="w-full">
-            <input 
-              type="date" 
-              value={selectedDate} 
-              onChange={(e) => setSelectedDate(e.target.value)} 
-              className="w-full box-border p-4 md:p-5 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all text-base md:text-lg appearance-none" 
-              style={{ minWidth: '0' }}
-            />
-          </div>
+      <main className="max-w-2xl mx-auto px-4 -mt-10 relative z-20 space-y-6">
+        <section className="bg-slate-800/80 backdrop-blur-3xl p-6 rounded-[2.5rem] border border-white/10 shadow-2xl">
+          <h3 className="text-sm font-black mb-4 text-white uppercase tracking-widest">📅 Wybierz dzień</h3>
+          <input 
+            type="date" 
+            value={selectedDate} 
+            onChange={(e) => setSelectedDate(e.target.value)} 
+            className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white font-bold outline-none focus:border-amber-500 transition-all appearance-none" 
+            style={{ boxSizing: 'border-box' }}
+          />
         </section>
 
-        <section className="bg-slate-800/40 backdrop-blur-2xl p-8 md:p-14 rounded-[4rem] border border-white/5 shadow-2xl">
-          <h4 className="text-3xl font-serif text-white mb-12">Refleksje wspólnoty</h4>
-          <div className="grid grid-cols-1 gap-6 mb-12 max-h-[500px] overflow-y-auto pr-4 custom-scroll">
+        <section className="bg-slate-800/40 backdrop-blur-2xl p-6 md:p-10 rounded-[3rem] border border-white/5 shadow-2xl">
+          <h4 className="text-xl font-serif text-white mb-8 text-center">Refleksje wspólnoty</h4>
+          <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scroll">
             {comments.map(c => (
-              <div key={c.id} className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5">
-                <p className="text-slate-200 text-xl mb-6 leading-relaxed font-light italic">"{c.text}"</p>
-                <div className="flex justify-between text-[11px] font-black tracking-widest uppercase text-slate-500 border-t border-white/5 pt-6">
+              <div key={c.id} className="p-6 rounded-[2rem] bg-white/5 border border-white/5">
+                <p className="text-slate-300 text-base mb-4 italic leading-relaxed">"{c.text}"</p>
+                <div className="flex justify-between text-[9px] font-black tracking-widest uppercase text-slate-500 border-t border-white/5 pt-4">
                   <span className="text-amber-600">✍️ {c.author}</span>
                   <span>{new Date(c.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
             ))}
           </div>
-          <div className="space-y-5 pt-10 border-t border-white/10">
-            <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-5 rounded-2xl bg-slate-900 border border-white/10 text-white text-lg outline-none focus:border-amber-500" />
-            <textarea placeholder="Twoja refleksja..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-7 rounded-3xl bg-slate-900 border border-white/10 text-white text-lg outline-none focus:border-amber-500 min-h-[150px] resize-none" />
-            <button onClick={handleAddComment} className="w-full py-6 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-black rounded-3xl transition-all uppercase tracking-[0.2em] text-sm shadow-xl active:scale-95">Udostępnij Słowo</button>
+          <div className="space-y-4 pt-6 border-t border-white/10">
+            <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-4 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500" />
+            <textarea placeholder="Twoja refleksja..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-5 rounded-2xl bg-slate-900 border border-white/10 text-white outline-none focus:border-amber-500 min-h-[120px] resize-none" />
+            <button onClick={handleAddComment} className="w-full py-5 bg-amber-600 hover:bg-amber-500 text-white font-black rounded-2xl transition-all uppercase tracking-widest text-[10px] shadow-lg">Dodaj wpis</button>
           </div>
         </section>
       </main>
 
       <style>{`
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar { width: 3px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fadeIn { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        input[type="date"]::-webkit-calendar-picker-indicator {
-          filter: invert(1);
-          cursor: pointer;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.7s ease-out forwards; }
       `}</style>
     </div>
   );
