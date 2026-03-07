@@ -17,7 +17,7 @@ function App() {
 
   const minDate2026 = "2026-01-01";
 
-  // TWOJA PEŁNA LISTA RANG (CO 5 DNI) - PRZYWRÓCONA
+  // TWOJA PEŁNA LISTA RANG (CO 5 DNI)
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz Słowa", icon: "👂" },
@@ -95,7 +95,7 @@ function App() {
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
   ];
 
-  // NOWA FUNKCJA - 37 MOTYWÓW KOLORYSTYCZNYCH (CO 10 DNI)
+  // SYSTEM KOLORÓW (37 PROGÓW + DODATKOWY DZIEŃ 6)
   const getTheme = (count) => {
     if (count >= 360) return { bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/50", aura: "bg-amber-500/30", btn: "bg-amber-600", card: "bg-amber-500/15" };
     if (count >= 350) return { bg: "bg-amber-900", accent: "text-amber-300", border: "border-amber-400/40", aura: "bg-amber-400/20", btn: "bg-amber-500", card: "bg-amber-400/10" };
@@ -133,7 +133,9 @@ function App() {
     if (count >= 30) return { bg: "bg-indigo-950", accent: "text-indigo-500", border: "border-indigo-500/40", aura: "bg-indigo-500/20", btn: "bg-indigo-700", card: "bg-indigo-500/10" };
     if (count >= 20) return { bg: "bg-blue-900", accent: "text-blue-300", border: "border-blue-600/40", aura: "bg-blue-600/20", btn: "bg-blue-500", card: "bg-blue-600/10" };
     if (count >= 10) return { bg: "bg-blue-950", accent: "text-blue-500", border: "border-blue-500/40", aura: "bg-blue-500/20", btn: "bg-blue-700", card: "bg-blue-500/10" };
-    // START (0-9 DNI)
+    // NOWY PRÓG: DZIEŃ 6 (Deep Ocean Blue)
+    if (count >= 6) return { bg: "bg-slate-950", accent: "text-sky-400", border: "border-sky-800/40", aura: "bg-sky-900/20", btn: "bg-sky-800", card: "bg-sky-900/10" };
+    // START (0-5 DNI - Sky Blue)
     return { bg: "bg-sky-950", accent: "text-sky-300", border: "border-sky-500/30", aura: "bg-sky-400/10", btn: "bg-sky-700", card: "bg-sky-500/5" };
   };
 
@@ -262,7 +264,7 @@ function App() {
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-12">
                    <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4 uppercase">Głos Słowa</p>
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all hover:bg-white/10 transition-all">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all">
                     <div className={`w-10 h-10 ${theme.btn} rounded-full flex items-center justify-center text-white shrink-0 shadow-lg`}>
                       <span className="text-lg ml-0.5">▶️</span>
                     </div>
