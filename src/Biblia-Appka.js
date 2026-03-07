@@ -23,33 +23,34 @@ function App() {
     { day: 10, label: "Katechumen", icon: "🕯️" },
     { day: 15, label: "Wierny", icon: "✝️" },
     { day: 20, label: "Gorliwy Wyznawca", icon: "🙏" },
-    { day: 25, label: "Świadek Wiary", icon: "🕊️" },
     { day: 30, label: "Apostoł Codzienności", icon: "👣" },
-    { day: 35, label: "Lektor", icon: "📖" },
-    { day: 40, label: "Psalmišta", icon: "🎵" },
-    { day: 45, label: "Akolita", icon: "🍷" },
-    { day: 50, label: "Szafarz Słowa", icon: "📜" },
-    { day: 55, label: "Ceremoniarz", icon: "🔔" },
-    { day: 60, label: "Katecheta", icon: "🏫" },
-    { day: 65, label: "Zelator", icon: "🔥" },
+    { day: 45, label: "Lektor", icon: "📖" },
+    { day: 60, label: "Akolita", icon: "🍷" },
+    { day: 80, label: "Ceremoniarz", icon: "🔔" },
     { day: 100, label: "Doktor Wiary", icon: "🏛️" },
-    { day: 110, label: "Profes Wieczysty", icon: "⛪" },
-    { day: 150, label: "Czciciel Serca Jezusowego", icon: "❤️" },
+    { day: 130, label: "Profes Wieczysty", icon: "⛪" },
+    { day: 160, label: "Rycerz Niepokalanej", icon: "🛡️" },
     { day: 200, label: "Głos na Pustyni", icon: "📢" },
     { day: 250, label: "Widzący Boga", icon: "👁️" },
     { day: 300, label: "Ziarno Dobrej Ziemi", icon: "🌾" },
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
   ];
 
-  const getTheme = () => {
-    if (streak >= 365) return { bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/30", aura: "bg-amber-500/20", btn: "bg-amber-600", bar: "bg-amber-500" };
-    if (streak >= 200) return { bg: "bg-red-950", accent: "text-red-400", border: "border-red-500/30", aura: "bg-red-500/20", btn: "bg-red-700", bar: "bg-red-500" };
-    if (streak >= 100) return { bg: "bg-emerald-950", accent: "text-emerald-400", border: "border-emerald-500/30", aura: "bg-emerald-500/20", btn: "bg-emerald-700", bar: "bg-emerald-500" };
-    if (streak >= 30) return { bg: "bg-purple-950", accent: "text-purple-400", border: "border-purple-500/30", aura: "bg-purple-500/20", btn: "bg-purple-700", bar: "bg-purple-500" };
-    return { bg: "bg-slate-950", accent: "text-blue-400", border: "border-blue-500/30", aura: "bg-blue-500/10", btn: "bg-blue-700", bar: "bg-blue-500" };
+  // 10 UNIKALNYCH MOTYWÓW KOLORYSTYCZNYCH
+  const getTheme = (count) => {
+    if (count >= 365) return { key: "gold", bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/40", aura: "bg-amber-500/20", btn: "bg-amber-600", card: "bg-amber-500/10" };
+    if (count >= 300) return { key: "silver", bg: "bg-slate-900", accent: "text-slate-100", border: "border-slate-400/40", aura: "bg-slate-400/20", btn: "bg-slate-600", card: "bg-slate-400/10" };
+    if (count >= 250) return { key: "sky", bg: "bg-cyan-950", accent: "text-cyan-400", border: "border-cyan-500/40", aura: "bg-cyan-500/20", btn: "bg-cyan-600", card: "bg-cyan-500/10" };
+    if (count >= 200) return { key: "red", bg: "bg-red-950", accent: "text-red-400", border: "border-red-500/40", aura: "bg-red-500/20", btn: "bg-red-700", card: "bg-red-500/10" };
+    if (count >= 160) return { key: "orange", bg: "bg-orange-950", accent: "text-orange-400", border: "border-orange-500/40", aura: "bg-orange-500/20", btn: "bg-orange-700", card: "bg-orange-500/10" };
+    if (count >= 120) return { key: "emerald", bg: "bg-emerald-950", accent: "text-emerald-400", border: "border-emerald-500/40", aura: "bg-emerald-500/20", btn: "bg-emerald-700", card: "bg-emerald-500/10" };
+    if (count >= 80) return { key: "lime", bg: "bg-lime-950", accent: "text-lime-400", border: "border-lime-500/40", aura: "bg-lime-500/20", btn: "bg-lime-700", card: "bg-lime-500/10" };
+    if (count >= 45) return { key: "purple", bg: "bg-purple-950", accent: "text-purple-400", border: "border-purple-500/40", aura: "bg-purple-500/20", btn: "bg-purple-700", card: "bg-purple-500/10" };
+    if (count >= 15) return { key: "blue", bg: "bg-blue-950", accent: "text-blue-400", border: "border-blue-500/40", aura: "bg-blue-500/20", btn: "bg-blue-700", card: "bg-blue-500/10" };
+    return { key: "slate", bg: "bg-slate-950", accent: "text-slate-400", border: "border-slate-500/30", aura: "bg-slate-500/10", btn: "bg-slate-800", card: "bg-slate-500/5" };
   };
 
-  const theme = getTheme();
+  const theme = getTheme(streak);
   const currentBadge = [...RANKS_CONFIG].reverse().find(r => streak >= r.day) || RANKS_CONFIG[0];
   const nextBadge = RANKS_CONFIG.find(r => r.day > streak);
 
@@ -115,12 +116,18 @@ function App() {
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
-    await supabase.from('comments').insert([{ verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy" }]);
+    // Zapisujemy komentarz z aktualną liczbą dni użytkownika (streak), aby wiedzieć, jaki kolor mu przypisać
+    await supabase.from('comments').insert([{ 
+      verse_id: currentVerse.id, 
+      text: newComment, 
+      author: author.trim() || "Anonimowy",
+      user_streak_at_time: streak 
+    }]);
     setNewComment(""); setAuthor(""); loadData(selectedDate);
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} text-slate-200 font-sans pb-20 overflow-x-hidden relative transition-colors duration-1000`}>
+    <div className={`min-h-screen ${theme.bg} text-slate-200 font-sans pb-20 overflow-x-hidden relative transition-all duration-1000`}>
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className={`absolute top-[-20%] left-[-10%] w-[100vw] h-[600px] ${theme.aura} blur-[120px] rounded-full transition-all duration-1000`}></div>
       </div>
@@ -129,7 +136,7 @@ function App() {
         <div className="max-w-2xl mx-auto">
           <div className="flex flex-col items-center mb-10 gap-2">
              <div className="group relative">
-               <div className={`inline-flex items-center gap-3 bg-white/5 border ${theme.border} p-2.5 px-5 rounded-2xl shadow-xl backdrop-blur-md cursor-help`}>
+               <div className={`inline-flex items-center gap-3 bg-white/5 border ${theme.border} p-2.5 px-5 rounded-2xl shadow-xl backdrop-blur-md`}>
                  <span className="text-xl">🔥 {streak}</span>
                  <div className="w-[1px] h-6 bg-white/10"></div>
                  <span className={`${theme.accent} font-black uppercase text-[10px] tracking-widest`}>{currentBadge.icon} {currentBadge.label}</span>
@@ -144,7 +151,7 @@ function App() {
                         <span>{streak}/{nextBadge.day}d</span>
                       </div>
                       <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                        <div className={`h-full ${theme.bar}`} style={{ width: `${(streak/nextBadge.day)*100}%` }}></div>
+                        <div className={`h-full ${theme.btn}`} style={{ width: `${(streak/nextBadge.day)*100}%` }}></div>
                       </div>
                     </div>
                   )}
@@ -160,15 +167,15 @@ function App() {
              </div>
           </div>
 
-          <span className={`px-5 py-1.5 rounded-full bg-white/5 border ${theme.border} ${theme.accent} text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block transition-all`}>Słowo Życia na {selectedDate}</span>
+          <span className={`px-5 py-1.5 rounded-full bg-white/5 border ${theme.border} ${theme.accent} text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block transition-all`}>Słowo na rok 2026</span>
           
           {loading ? (
-            <div className="py-20 opacity-50 italic animate-pulse">Wczytywanie...</div>
+            <div className="py-20 opacity-50 italic animate-pulse text-2xl">Otwieranie Księgi...</div>
           ) : currentVerse ? (
             <div className="flex flex-col items-center animate-fadeIn">
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-12">
-                   <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4">Posłuchaj Słowa</p>
+                   <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4">Głos Słowa</p>
                   <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4">
                     <div className={`w-10 h-10 ${theme.btn} rounded-full flex items-center justify-center text-white shrink-0 shadow-lg transition-colors`}>
                       <span className="text-lg ml-0.5">▶️</span>
@@ -192,27 +199,30 @@ function App() {
 
       <main className="max-w-2xl mx-auto px-4 -mt-10 relative z-20 space-y-6">
         <section className="bg-black/20 backdrop-blur-3xl p-6 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <h3 className="text-[10px] font-black mb-4 uppercase tracking-widest opacity-40">📅 Archiwum</h3>
           <input type="date" min={minDate2026} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full p-4 rounded-2xl bg-black/40 border border-white/5 text-white font-bold outline-none focus:border-white/20 appearance-none" style={{ boxSizing: 'border-box' }} />
         </section>
 
-        <section className="bg-black/10 backdrop-blur-2xl p-6 md:p-10 rounded-[3rem] border border-white/5">
+        <section className="bg-black/10 backdrop-blur-2xl p-6 md:p-10 rounded-[3rem] border border-white/5 shadow-2xl">
           <h4 className="text-xl font-serif text-white mb-8 text-center uppercase tracking-widest opacity-80">Refleksje</h4>
-          <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scroll">
-            {comments.map(c => (
-              <div key={c.id} className="p-6 rounded-[2rem] bg-white/5 border border-white/5">
-                <p className="text-slate-300 text-base mb-4 italic leading-relaxed font-light">"{c.text}"</p>
-                <div className="flex justify-between text-[9px] font-black tracking-widest uppercase opacity-40 pt-4 border-t border-white/5">
-                  <span>✍️ {c.author}</span>
-                  <span>{new Date(c.created_at).toLocaleDateString()}</span>
+          <div className="space-y-4 mb-8 max-h-[500px] overflow-y-auto pr-2 custom-scroll">
+            {comments.map(c => {
+              // Wyznaczamy motyw dla konkretnego komentarza na podstawie streaka autora w tamtym momencie
+              const commentTheme = getTheme(c.user_streak_at_time || 0);
+              return (
+                <div key={c.id} className={`p-6 rounded-[2rem] border transition-all ${commentTheme.card} ${commentTheme.border}`}>
+                  <p className="text-slate-200 text-base mb-4 italic leading-relaxed font-light">"{c.text}"</p>
+                  <div className={`flex justify-between text-[9px] font-black tracking-widest uppercase pt-4 border-t border-white/5 ${commentTheme.accent}`}>
+                    <span>✍️ {c.author}</span>
+                    <span className="opacity-50">{new Date(c.created_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="space-y-4 pt-6 border-t border-white/5">
             <input type="text" placeholder="Twoje imię..." value={author} onChange={(e) => setAuthor(e.target.value)} className="w-full p-4 rounded-2xl bg-black/40 border border-white/5 text-white outline-none focus:border-white/20" />
             <textarea placeholder="Twoja myśl..." value={newComment} onChange={(e) => setNewComment(e.target.value)} className="w-full p-5 rounded-2xl bg-black/40 border border-white/5 text-white outline-none focus:border-white/20 min-h-[120px] resize-none" />
-            <button onClick={handleAddComment} className={`w-full py-5 ${theme.btn} text-white font-black rounded-2xl transition-all uppercase tracking-widest text-[10px] shadow-lg active:scale-95`}>Udostępnij</button>
+            <button onClick={handleAddComment} className={`w-full py-5 ${theme.btn} text-white font-black rounded-2xl transition-all uppercase tracking-widest text-[10px] shadow-lg active:scale-95`}>Dodaj Refleksję</button>
           </div>
         </section>
       </main>
