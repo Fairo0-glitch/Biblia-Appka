@@ -17,57 +17,57 @@ function App() {
 
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
-    { day: 5, label: "Słuchacz", icon: "👂" },
-    { day: 10, label: "Uczeń", icon: "📖" },
-    { day: 15, label: "Pielgrzym", icon: "🥾" },
-    { day: 20, label: "Świadek", icon: "🕊️" },
-    { day: 25, label: "Gorliwy", icon: "🔥" },
-    { day: 30, label: "Wojownik Światła", icon: "⚔️" },
-    { day: 35, label: "Lektor", icon: "🎙️" },
-    { day: 40, label: "Akolita", icon: "🕯️" },
-    { day: 45, label: "Katechista", icon: "📜" },
-    { day: 50, label: "Ewangelizator", icon: "📣" },
-    { day: 55, label: "Pasterz Serca", icon: "🐑" },
-    { day: 60, label: "Obrońca Wiary", icon: "🛡️" },
-    { day: 65, label: "Kontemplator", icon: "🧘" },
-    { day: 70, label: "Mistyk", icon: "✨" },
+    { day: 5, label: "Słuchacz Słowa", icon: "👂" },
+    { day: 10, label: "Katechumen", icon: "🕯️" },
+    { day: 15, label: "Chrześcijanin", icon: "✝️" },
+    { day: 20, label: "Gorliwy Wyznawca", icon: "🙏" },
+    { day: 25, label: "Apostoł Codzienności", icon: "👣" },
+    { day: 30, label: "Świadek Ewangelii", icon: "📣" },
+    { day: 35, label: "Lektor", icon: "📖" },
+    { day: 40, label: "Psalmišta", icon: "🎵" },
+    { day: 45, label: "Akolita", icon: "🍷" },
+    { day: 50, label: "Szafarz Słowa", icon: "📜" },
+    { day: 55, label: "Ceremoniarz", icon: "🔔" },
+    { day: 60, label: "Katecheta", icon: "🏫" },
+    { day: 65, label: "Zelator", icon: "🔥" },
+    { day: 70, label: "Członek Żywego Różańca", icon: "📿" },
     { day: 75, label: "Misjonarz", icon: "🌍" },
-    { day: 80, label: "Pustelnik", icon: "🏔️" },
-    { day: 85, label: "Wyznawca", icon: "🙏" },
-    { day: 90, label: "Mędrzec Duchowy", icon: "👴" },
-    { day: 95, label: "Teolog", icon: "🧠" },
-    { day: 100, label: "Doktor Kościoła", icon: "🏛️" },
+    { day: 80, label: "Obrońca Wiary", icon: "🛡️" },
+    { day: 85, label: "Pustelnik Duchowy", icon: "🏔️" },
+    { day: 90, label: "Kontemplator", icon: "🧘" },
+    { day: 95, label: "Teolog Serca", icon: "🧠" },
+    { day: 100, label: "Doktor Wiary", icon: "🏛️" },
     { day: 105, label: "Nowicjusz", icon: "🌿" },
-    { day: 110, label: "Zakonnik", icon: "⛪" },
-    { day: 115, label: "Opat", icon: "🗝️" },
-    { day: 120, label: "Kanonik", icon: "📙" },
-    { day: 125, label: "Pustelnik Karmelu", icon: "🌋" },
-    { day: 130, label: "Rycerz Niepokalanej", icon: "🛡️" },
-    { day: 135, label: "Sługa Boży", icon: "🙇" },
-    { day: 140, label: "Czciciel Słowa", icon: "💖" },
-    { day: 145, label: "Głos na Pustyni", icon: "🌵" },
-    { day: 150, label: "Syn Światłości", icon: "☀️" },
-    { day: 155, label: "Stróż Poranka", icon: "🌅" },
-    { day: 160, label: "Niosący Nadzieję", icon: "⚓" },
-    { day: 165, label: "Budowniczy Arki", icon: "🔨" },
-    { day: 170, label: "Przyjaciel Oblubieńca", icon: "💍" },
-    { day: 175, label: "Szafarz Łaski", icon: "🍷" },
+    { day: 110, label: "Profes Wieczysty", icon: "⛪" },
+    { day: 115, label: "Przeor", icon: "🗝️" },
+    { day: 120, label: "Opat", icon: "📙" },
+    { day: 125, label: "Kanonik", icon: "👔" },
+    { day: 130, label: "Prałat", icon: "🎩" },
+    { day: 135, label: "Sługa Pański", icon: "🙇" },
+    { day: 140, label: "Rycerz Niepokalanej", icon: "🛡️" },
+    { day: 145, label: "Syn Maryi", icon: "💙" },
+    { day: 150, label: "Czciciel Serca Pana", icon: "❤️" },
+    { day: 155, label: "Stróż Tabernakulum", icon: "🏠" },
+    { day: 160, label: "Pielgrzym Jasnogórski", icon: "👣" },
+    { day: 165, label: "Trubadur Boży", icon: "🪕" },
+    { day: 170, label: "Mąż Sprawiedliwy", icon: "⚖️" },
+    { day: 175, label: "Pokorny Wyrobnik", icon: "🧹" },
     { day: 180, label: "Męczennik Codzienności", icon: "🥀" },
-    { day: 185, label: "Wędrowiec Pański", icon: "🚶" },
+    { day: 185, label: "Wędrowiec Emaus", icon: "🚶" },
     { day: 190, label: "Ogrodnik Wiary", icon: "🌱" },
     { day: 195, label: "Rybak Ludzi", icon: "🎣" },
-    { day: 200, label: "Apostoł Narodów", icon: "🚢" },
-    { day: 205, label: "Świadek Nadziei", icon: "🌅" },
+    { day: 200, label: "Głos na Pustyni", icon: "📢" },
+    { day: 205, label: "Zwiastun Dobrej Nowiny", icon: "🕊️" },
     { day: 210, label: "Strażnik Tradycji", icon: "📚" },
     { day: 215, label: "Filadelfijczyk", icon: "🤝" },
-    { day: 220, label: "Wierny Efezczyk", icon: "🏰" },
+    { day: 220, label: "Wierny Sługa", icon: "👑" },
     { day: 225, label: "Mieszkaniec Syjonu", icon: "⛰️" },
     { day: 230, label: "Dziedzic Obietnicy", icon: "📜" },
     { day: 235, label: "Potomek Abrahama", icon: "🌌" },
-    { day: 240, label: "Widzący Boga", icon: "👁️" },
-    { day: 245, label: "Pokorny Sługa", icon: "🧹" },
+    { day: 240, label: "Widzący Pana", icon: "👁️" },
+    { day: 245, label: "Pokorny Franciszkanin", icon: "🧶" },
     { day: 250, label: "Zwiastun Pokoju", icon: "🕊️" },
-    { day: 255, label: "Mąż Sprawiedliwy", icon: "⚖️" },
+    { day: 255, label: "Czciciel Eucharystii", icon: "🍞" },
     { day: 260, label: "Naczynie Wybrane", icon: "🏺" },
     { day: 265, label: "Sól Ziemi", icon: "🧂" },
     { day: 270, label: "Światłość Świata", icon: "🏙️" },
@@ -79,14 +79,14 @@ function App() {
     { day: 300, label: "Towarzysz Aniołów", icon: "👼" },
     { day: 305, label: "Domownik Boga", icon: "🏠" },
     { day: 310, label: "Mieszkaniec Przybytku", icon: "⛺" },
-    { day: 315, label: "Współdziedzic", icon: "💎" },
-    { day: 320, label: "Dziecko Boże", icon: "👶" },
-    { day: 325, label: "Przyjaciel Jezusa", icon: "🤝" },
+    { day: 315, label: "Współdziedzic Nieba", icon: "💎" },
+    { day: 320, label: "Umiłowane Dziecko", icon: "👶" },
+    { day: 325, label: "Przyjaciel Chrystusa", icon: "🤝" },
     { day: 330, label: "Umiłowany Uczeń", icon: "💓" },
     { day: 335, label: "Wybraniec Niebios", icon: "⭐" },
-    { day: 340, label: "Patriarcha Nowy", icon: "👴" },
+    { day: 340, label: "Nowy Patriarcha", icon: "👴" },
     { day: 345, label: "Strażnik Bram", icon: "🗝️" },
-    { day: 350, label: "Sługa Wierny", icon: "👑" },
+    { day: 350, label: "Wierny do Końca", icon: "👑" },
     { day: 355, label: "Gość Baranka", icon: "🍷" },
     { day: 360, label: "Dziedzic Królestwa", icon: "🏰" },
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
@@ -96,14 +96,37 @@ function App() {
   const nextBadge = RANKS_CONFIG.find(r => r.day > streak);
   const currentBadge = getCurrentBadge(streak);
 
-  const getCleanDeviceInfo = useCallback(() => {
-    return `${navigator.userAgent} | ${window.screen.width}x${window.screen.height}`;
+  const getSimpleDeviceInfo = useCallback(() => {
+    const ua = navigator.userAgent;
+    const w = window.screen.width;
+    const h = window.screen.height;
+    let model = "Urządzenie";
+    let os = "OS";
+    let browser = "Przeglądarka";
+
+    if (/android/i.test(ua)) {
+      os = "Android";
+      const match = ua.match(/Android\s([0-9.]+)/);
+      if (match) os += ` ${match[1]}`;
+      const modelMatch = ua.match(/;\s([^;]+)\sBuild/);
+      if (modelMatch) model = modelMatch[1];
+    } else if (/iPhone|iPad|iPod/.test(ua)) {
+      model = "iPhone";
+      const match = ua.match(/OS\s([0-9_]+)/);
+      if (match) os = `iOS ${match[1].replace(/_/g, '.')}`;
+    }
+
+    if (/chrome|crios/i.test(ua)) browser = "Chrome";
+    else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
+    else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
+
+    return `${model} | ${os} | ${browser} | Screen: ${w}x${h}`;
   }, []);
 
   const updateStreak = useCallback(async () => {
     const today = new Date().toLocaleDateString('sv-SE');
     let deviceId = localStorage.getItem('deviceId');
-    const deviceInfo = getCleanDeviceInfo();
+    const deviceInfo = getSimpleDeviceInfo();
     if (!deviceId) {
       deviceId = Math.random().toString(36).substring(2, 15);
       localStorage.setItem('deviceId', deviceId);
@@ -122,7 +145,7 @@ function App() {
     }
     localStorage.setItem('streakCount', finalStreak.toString());
     setStreak(finalStreak);
-  }, [streak, getCleanDeviceInfo]);
+  }, [streak, getSimpleDeviceInfo]);
 
   const loadData = useCallback(async (date) => {
     setLoading(true);
@@ -164,7 +187,7 @@ function App() {
                </div>
                
                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-slate-800 border border-white/10 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4 text-left">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Droga 2026</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1">Droga Wiary 2026</p>
                   {nextBadge && (
                     <div className="mb-4">
                       <div className="flex justify-between text-[8px] font-bold text-amber-500/80 mb-1 uppercase">
@@ -195,7 +218,6 @@ function App() {
           ) : currentVerse ? (
             <div className="flex flex-col items-center animate-fadeIn">
               
-              {/* AUDIO NA GÓRZE */}
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-10">
                    <p className="text-[10px] uppercase font-black text-amber-500/80 tracking-[0.2em] mb-4">Posłuchaj Słowa Życia</p>
