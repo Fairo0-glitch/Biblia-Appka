@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js'; // NAPRAWIONY IMPORT
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -146,6 +146,7 @@ function App() {
   const nextBadge = RANKS_CONFIG.find(r => r.day > streak);
 
   const getDetailedDeviceInfo = useCallback(async () => {
+    // NAPRAWIONY SPOSÓB INICJALIZACJI PARSERA
     const parser = new UAParser();
     const result = parser.getResult();
     
