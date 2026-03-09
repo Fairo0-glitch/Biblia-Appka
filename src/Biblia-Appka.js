@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import UAParser from 'ua-parser-js';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -17,7 +18,6 @@ function App() {
 
   const minDate2026 = "2026-01-01";
 
-  // FUNKCJA FORMATUJĄCA DATĘ NA POLSKI ZAPIS
   const formatDatePL = (dateString) => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('pl-PL', options);
@@ -145,48 +145,63 @@ function App() {
   const currentBadge = [...RANKS_CONFIG].reverse().find(r => streak >= r.day) || RANKS_CONFIG[0];
   const nextBadge = RANKS_CONFIG.find(r => r.day > streak);
 
-  const getSimpleDeviceInfo = useCallback(() => {
-    const ua = navigator.userAgent;
-    const w = window.screen.width;
-    const h = window.screen.height;
-    let model = "Urządzenie"; let os = "OS"; let browser = "Przeglądarka";
-    if (/android/i.test(ua)) {
-      os = "Android";
-      const match = ua.match(/Android\s([0-9.]+)/); if (match) os += ` ${match[1]}`;
-      const modelMatch = ua.match(/;\s([^;]+)\sBuild/); if (modelMatch) model = modelMatch[1];
-    } else if (/iPhone|iPad|iPod/.test(ua)) {
-      model = "iPhone";
-      const match = ua.match(/OS\s([0-9_]+)/); if (match) os = `iOS ${match[1].replace(/_/g, '.')}`;
+  const getDetailedDeviceInfo = useCallback(async () => {
+    const parser = new UAParser();
+    const result = parser.getResult();
+    
+    let highEntropyData = {};
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      try {
+        highEntropyData = await navigator.userAgentData.getHighEntropyValues(['model', 'platformVersion', 'deviceFormFactor', 'fullVersionList']);
+      } catch (e) {
+        console.log("High Entropy API blocked or not supported");
+      }
     }
-    if (/chrome|crios/i.test(ua)) browser = "Chrome";
-    else if (/firefox|fxios/i.test(ua)) browser = "Firefox";
-    else if (/safari/i.test(ua) && !/chrome|crios/i.test(ua)) browser = "Safari";
-    return `${model} | ${os} | ${browser} | Screen: ${w}x${h}`;
+
+    const device = result.device.model || highEntropyData.model || "Urządzenie";
+    const vendor = result.device.vendor || "";
+    const os = `${result.os.name || highEntropyData.platform || "System"} ${result.os.version || highEntropyData.platformVersion || ""}`;
+    const browser = `${result.browser.name} ${result.browser.version}`;
+    const screen = `${window.screen.width}x${window.screen.height}`;
+
+    return `${vendor} ${device} | OS: ${os} | Browser: ${browser} | Screen: ${screen}`.trim();
   }, []);
 
   const updateStreak = useCallback(async () => {
     const today = new Date().toLocaleDateString('sv-SE');
     let deviceId = localStorage.getItem('deviceId');
-    const deviceInfo = getSimpleDeviceInfo();
+    const deviceInfo = await getDetailedDeviceInfo();
+
     if (!deviceId) {
       deviceId = Math.random().toString(36).substring(2, 15);
       localStorage.setItem('deviceId', deviceId);
     }
+
     const { data: dbData } = await supabase.from('user_streaks').select('*').eq('device_id', deviceId).maybeSingle();
     let finalStreak = streak;
     const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
+
     if (dbData) {
       const dbStreak = dbData.streak_count;
       finalStreak = dbData.last_visit_date === today ? dbStreak : (dbData.last_visit_date === yesterdayStr ? dbStreak + 1 : 1);
-      await supabase.from('user_streaks').update({ streak_count: finalStreak, last_visit_date: today, device_info: deviceInfo }).eq('device_id', deviceId);
+      await supabase.from('user_streaks').update({ 
+        streak_count: finalStreak, 
+        last_visit_date: today, 
+        device_info: deviceInfo 
+      }).eq('device_id', deviceId);
     } else {
       finalStreak = streak > 0 ? streak : 1;
-      await supabase.from('user_streaks').insert([{ device_id: deviceId, streak_count: finalStreak, last_visit_date: today, device_info: deviceInfo }]);
+      await supabase.from('user_streaks').insert([{ 
+        device_id: deviceId, 
+        streak_count: finalStreak, 
+        last_visit_date: today, 
+        device_info: deviceInfo 
+      }]);
     }
     localStorage.setItem('streakCount', finalStreak.toString());
     setStreak(finalStreak);
-  }, [streak, getSimpleDeviceInfo]);
+  }, [streak, getDetailedDeviceInfo]);
 
   const loadData = useCallback(async (date) => {
     setLoading(true);
@@ -257,7 +272,6 @@ function App() {
              </div>
           </div>
 
-          {/* TUTAJ ZMIANA: FORMATOWANA DATA PO POLSKU */}
           <span className={`px-5 py-1.5 rounded-full bg-white/5 border ${theme.border} ${theme.accent} text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block transition-all tracking-widest`}>
             Słowo na {formatDatePL(selectedDate)}
           </span>
@@ -269,7 +283,7 @@ function App() {
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-12">
                    <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4 uppercase">Głos Słowa</p>
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all hover:bg-white/10">
+                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all">
                     <div className={`w-10 h-10 ${theme.btn} rounded-full flex items-center justify-center text-white shrink-0 shadow-lg`}>
                       <span className="text-lg ml-0.5">▶️</span>
                     </div>
