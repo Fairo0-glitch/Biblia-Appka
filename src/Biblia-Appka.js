@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { UAParser } from 'ua-parser-js'; // NAPRAWIONY IMPORT
+import { UAParser } from 'ua-parser-js';
+import OneSignal from 'react-onesignal';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -18,11 +19,29 @@ function App() {
 
   const minDate2026 = "2026-01-01";
 
+  // INTEGRACJA ONESIGNAL
+  useEffect(() => {
+    OneSignal.init({ 
+      appId: "6886806f-63c7-483d-a9d9-cb36947fd55f",
+      allowLocalhostAsSecureOrigin: true,
+      welcomeNotification: {
+        title: "Witaj w Biblia-Appka! ✨",
+        message: "Będziemy przesyłać Ci Słowo Życia codziennie o 8:00."
+      }
+    }).then(() => {
+      const deviceId = localStorage.getItem('deviceId');
+      if (deviceId) {
+        OneSignal.setExternalUserId(deviceId);
+      }
+    });
+  }, []);
+
   const formatDatePL = (dateString) => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('pl-PL', options);
   };
 
+  // KOMPLETNA LISTA RANG (CO 5 DNI)
   const RANKS_CONFIG = [
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
     { day: 5, label: "Słuchacz Słowa", icon: "👂" },
@@ -100,6 +119,7 @@ function App() {
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
   ];
 
+  // PEŁNA PALETA 37 TEMATÓW (CO 10 DNI)
   const getTheme = (count) => {
     if (count >= 360) return { bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/50", aura: "bg-amber-500/30", btn: "bg-amber-600", card: "bg-amber-500/15" };
     if (count >= 350) return { bg: "bg-amber-900", accent: "text-amber-300", border: "border-amber-400/40", aura: "bg-amber-400/20", btn: "bg-amber-500", card: "bg-amber-400/10" };
@@ -146,59 +166,36 @@ function App() {
   const nextBadge = RANKS_CONFIG.find(r => r.day > streak);
 
   const getDetailedDeviceInfo = useCallback(async () => {
-    // NAPRAWIONY SPOSÓB INICJALIZACJI PARSERA
     const parser = new UAParser();
     const result = parser.getResult();
-    
     let highEntropyData = {};
     if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-      try {
-        highEntropyData = await navigator.userAgentData.getHighEntropyValues(['model', 'platformVersion', 'deviceFormFactor', 'fullVersionList']);
-      } catch (e) {
-        console.log("High Entropy API blocked or not supported");
-      }
+      try { highEntropyData = await navigator.userAgentData.getHighEntropyValues(['model', 'platformVersion']); } catch (e) {}
     }
-
     const device = result.device.model || highEntropyData.model || "Urządzenie";
-    const vendor = result.device.vendor || "";
-    const os = `${result.os.name || highEntropyData.platform || "System"} ${result.os.version || highEntropyData.platformVersion || ""}`;
-    const browser = `${result.browser.name} ${result.browser.version}`;
-    const screen = `${window.screen.width}x${window.screen.height}`;
-
-    return `${vendor} ${device} | OS: ${os} | Browser: ${browser} | Screen: ${screen}`.trim();
+    const os = `${result.os.name || "System"} ${result.os.version || ""}`;
+    return `${result.device.vendor || ""} ${device} | OS: ${os}`.trim();
   }, []);
 
   const updateStreak = useCallback(async () => {
     const today = new Date().toLocaleDateString('sv-SE');
     let deviceId = localStorage.getItem('deviceId');
     const deviceInfo = await getDetailedDeviceInfo();
-
     if (!deviceId) {
       deviceId = Math.random().toString(36).substring(2, 15);
       localStorage.setItem('deviceId', deviceId);
     }
-
     const { data: dbData } = await supabase.from('user_streaks').select('*').eq('device_id', deviceId).maybeSingle();
     let finalStreak = streak;
     const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toLocaleDateString('sv-SE');
-
     if (dbData) {
       const dbStreak = dbData.streak_count;
       finalStreak = dbData.last_visit_date === today ? dbStreak : (dbData.last_visit_date === yesterdayStr ? dbStreak + 1 : 1);
-      await supabase.from('user_streaks').update({ 
-        streak_count: finalStreak, 
-        last_visit_date: today, 
-        device_info: deviceInfo 
-      }).eq('device_id', deviceId);
+      await supabase.from('user_streaks').update({ streak_count: finalStreak, last_visit_date: today, device_info: deviceInfo }).eq('device_id', deviceId);
     } else {
       finalStreak = streak > 0 ? streak : 1;
-      await supabase.from('user_streaks').insert([{ 
-        device_id: deviceId, 
-        streak_count: finalStreak, 
-        last_visit_date: today, 
-        device_info: deviceInfo 
-      }]);
+      await supabase.from('user_streaks').insert([{ device_id: deviceId, streak_count: finalStreak, last_visit_date: today, device_info: deviceInfo }]);
     }
     localStorage.setItem('streakCount', finalStreak.toString());
     setStreak(finalStreak);
@@ -223,33 +220,28 @@ function App() {
 
   const handleAddComment = async () => {
     if (!newComment.trim() || !currentVerse) return;
-    await supabase.from('comments').insert([{ 
-      verse_id: currentVerse.id, 
-      text: newComment, 
-      author: author.trim() || "Anonimowy",
-      user_streak_at_time: streak 
-    }]);
+    await supabase.from('comments').insert([{ verse_id: currentVerse.id, text: newComment, author: author.trim() || "Anonimowy", user_streak_at_time: streak }]);
     setNewComment(""); setAuthor(""); loadData(selectedDate);
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} text-slate-200 font-sans pb-20 overflow-x-hidden relative transition-all duration-1000`}>
+    <div className={`min-h-screen ${theme.bg} text-slate-200 font-sans pb-20 transition-all duration-1000`}>
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className={`absolute top-[-20%] left-[-10%] w-[100vw] h-[600px] ${theme.aura} blur-[120px] rounded-full transition-all duration-1000`}></div>
       </div>
 
       <header className="relative pt-12 pb-28 px-4 text-center z-10">
         <div className="max-w-2xl mx-auto">
-          <div className="flex flex-col items-center mb-10 gap-2">
+          <div className="flex flex-col items-center mb-10 gap-4">
              <div className="group relative">
-               <div className={`inline-flex items-center gap-3 bg-white/5 border ${theme.border} p-2.5 px-5 rounded-2xl shadow-xl backdrop-blur-md cursor-help`}>
+               <div className={`inline-flex items-center gap-3 bg-white/5 border ${theme.border} p-2.5 px-5 rounded-2xl shadow-xl backdrop-blur-md`}>
                  <span className="text-xl">🔥 {streak}</span>
                  <div className="w-[1px] h-6 bg-white/10"></div>
                  <span className={`${theme.accent} font-black uppercase text-[10px] tracking-widest`}>{currentBadge.icon} {currentBadge.label}</span>
                </div>
                
                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-slate-950 border border-white/10 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4 text-left">
-                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-3 border-b border-white/5 pb-1 uppercase">Droga Wiary 2026</p>
+                  <p className="text-[9px] font-black uppercase text-slate-500 mb-3 border-b border-white/5 pb-1 uppercase">Droga Wiary 2026</p>
                   {nextBadge && (
                     <div className="mb-4">
                       <div className="flex justify-between text-[8px] font-bold opacity-70 mb-1 uppercase">
@@ -271,6 +263,7 @@ function App() {
                   </div>
                </div>
              </div>
+             <button onClick={() => OneSignal.Slidedown.promptHttpPermission()} className="text-[10px] uppercase font-black opacity-40 hover:opacity-100 transition-all">🔔 Włącz przypomnienie 8:00</button>
           </div>
 
           <span className={`px-5 py-1.5 rounded-full bg-white/5 border ${theme.border} ${theme.accent} text-[10px] font-black uppercase tracking-[0.4em] mb-10 inline-block transition-all tracking-widest`}>
@@ -278,29 +271,16 @@ function App() {
           </span>
           
           {loading ? (
-            <div className="py-20 opacity-50 italic animate-pulse text-2xl">Otwieranie Księgi...</div>
+            <div className="py-20 opacity-50 italic animate-pulse text-2xl font-serif">Otwieranie Księgi...</div>
           ) : currentVerse ? (
             <div className="flex flex-col items-center animate-fadeIn">
-              {currentVerse.audio_url && (
-                <div className="w-full max-w-sm mb-12">
-                   <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4 uppercase">Głos Słowa</p>
-                  <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-3 rounded-3xl shadow-xl flex items-center gap-4 transition-all">
-                    <div className={`w-10 h-10 ${theme.btn} rounded-full flex items-center justify-center text-white shrink-0 shadow-lg`}>
-                      <span className="text-lg ml-0.5">▶️</span>
-                    </div>
-                    <div className="flex-1">
-                       <audio controls className="w-full h-7" src={currentVerse.audio_url} style={{ filter: 'invert(1) brightness(1.5)' }} />
-                    </div>
-                  </div>
-                </div>
-              )}
               <div className="space-y-6">
                 <h1 className="text-3xl md:text-5xl font-serif italic text-white leading-tight px-4 tracking-tight drop-shadow-lg">"{currentVerse.verse_text}"</h1>
                 <cite className={`text-lg font-bold ${theme.accent} block uppercase tracking-widest opacity-90 transition-colors`}>— {currentVerse.reference}</cite>
               </div>
             </div>
           ) : (
-            <div className="py-20 opacity-50">Brak zapisów na ten dzień.</div>
+            <div className="py-20 opacity-50 font-serif italic">Brak zapisów na ten dzień.</div>
           )}
         </div>
       </header>
