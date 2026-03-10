@@ -19,7 +19,7 @@ function App() {
 
   const minDate2026 = "2026-01-01";
 
-  // MODYFIKACJA: AUTOMATYCZNE WYMUSZENIE OKIENKA POWIADOMIEŃ
+  // INTEGRACJA ONESIGNAL - Z POPRAWKĄ NA WYMUSZANIE
   useEffect(() => {
     OneSignal.init({ 
       appId: "6886806f-63c7-483d-a9d9-cb36947fd55f",
@@ -30,8 +30,12 @@ function App() {
         message: "Będziemy przesyłać Ci Słowo Życia codziennie o 8:00."
       }
     }).then(() => {
-      // Automatyczne wywołanie okienka zaraz po zainicjowaniu
-      OneSignal.Slidedown.promptHttpPermission();
+      // Czekamy 2 sekundy po załadowaniu strony, zanim zapytamy o pozwolenie
+      setTimeout(() => {
+        if (!OneSignal.Notifications.permission) {
+          OneSignal.Slidedown.promptHttpPermission();
+        }
+      }, 2000);
       
       const deviceId = localStorage.getItem('deviceId');
       if (deviceId) {
