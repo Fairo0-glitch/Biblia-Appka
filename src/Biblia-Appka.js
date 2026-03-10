@@ -19,7 +19,7 @@ function App() {
 
   const minDate2026 = "2026-01-01";
 
-  // INTEGRACJA ONESIGNAL - AUTOMATYCZNE WYMUSZANIE PO 2 SEKUNDACH
+  // --- INTEGRACJA ONESIGNAL Z AUTOMATYCZNYM WYMUSZANIEM ---
   useEffect(() => {
     OneSignal.init({ 
       appId: "6886806f-63c7-483d-a9d9-cb36947fd55f",
@@ -30,8 +30,9 @@ function App() {
         message: "Będziemy przesyłać Ci Słowo Życia codziennie o 8:00."
       }
     }).then(() => {
-      // Automatyczne zapytanie o powiadomienia po 2s, jeśli użytkownik nie dał jeszcze zgody
+      // Automatyczne okienko po 2 sekundach (aby uniknąć blokady przeglądarki)
       setTimeout(() => {
+        // Jeśli użytkownik jeszcze nie dał zgody, wymuś okienko
         if (OneSignal.Notifications.permission !== "granted") {
           OneSignal.Slidedown.promptHttpPermission();
         }
@@ -49,160 +50,610 @@ function App() {
     return new Date(dateString).toLocaleDateString('pl-PL', options);
   };
 
-  // KOMPLETNA LISTA RANG (74 RANGI - CO 5 DNI)
+  // --- KOMPLETNA LISTA RANG (74 RANGI - CO 5 DNI) ---
   const RANKS_CONFIG = [
+
+
+
+
+
+
 
     { day: 1, label: "Poszukiwacz", icon: "🔍" },
 
+
+
+
+
+
+
     { day: 5, label: "Słuchacz Słowa", icon: "👂" },
+
+
+
+
+
+
 
     { day: 10, label: "Katechumen", icon: "🕯️" },
 
+
+
+
+
+
+
     { day: 15, label: "Wierny", icon: "✝️" },
+
+
+
+
+
+
 
     { day: 20, label: "Gorliwy Wyznawca", icon: "🙏" },
 
+
+
+
+
+
+
     { day: 25, label: "Świadek Wiary", icon: "🕊️" },
+
+
+
+
+
+
 
     { day: 30, label: "Apostoł Codzienności", icon: "👣" },
 
+
+
+
+
+
+
     { day: 35, label: "Lektor", icon: "📖" },
+
+
+
+
+
+
 
     { day: 40, label: "Psalmišta", icon: "🎵" },
 
+
+
+
+
+
+
     { day: 45, label: "Akolita", icon: "🍷" },
+
+
+
+
+
+
 
     { day: 50, label: "Szafarz Słowa", icon: "📜" },
 
+
+
+
+
+
+
     { day: 55, label: "Ceremoniarz", icon: "🔔" },
+
+
+
+
+
+
 
     { day: 60, label: "Katecheta", icon: "🏫" },
 
+
+
+
+
+
+
     { day: 65, label: "Zelator", icon: "🔥" },
+
+
+
+
+
+
 
     { day: 70, label: "Członek Wspólnoty", icon: "🤝" },
 
+
+
+
+
+
+
     { day: 75, label: "Misjonarz", icon: "🌍" },
+
+
+
+
+
+
 
     { day: 80, label: "Obrońca Wiary", icon: "🛡️" },
 
+
+
+
+
+
+
     { day: 85, label: "Duchowy Pustelnik", icon: "🏔️" },
+
+
+
+
+
+
 
     { day: 90, label: "Kontemplator", icon: "🧘" },
 
+
+
+
+
+
+
     { day: 95, label: "Teolog Serca", icon: "🧠" },
+
+
+
+
+
+
 
     { day: 100, label: "Doktor Wiary", icon: "🏛️" },
 
+
+
+
+
+
+
     { day: 105, label: "Nowicjusz", icon: "🌿" },
+
+
+
+
+
+
 
     { day: 110, label: "Profes Wieczysty", icon: "⛪" },
 
+
+
+
+
+
+
     { day: 115, label: "Przeor", icon: "🗝️" },
+
+
+
+
+
+
 
     { day: 120, label: "Opat", icon: "📙" },
 
+
+
+
+
+
+
     { day: 125, label: "Kanonik", icon: "🧥" },
+
+
+
+
+
+
 
     { day: 130, label: "Prałat", icon: "🎩" },
 
+
+
+
+
+
+
     { day: 135, label: "Sługa Pański", icon: "🙇" },
+
+
+
+
+
+
 
     { day: 140, label: "Rycerz Niepokalanej", icon: "🛡️" },
 
+
+
+
+
+
+
     { day: 145, label: "Syn Maryi", icon: "💙" },
+
+
+
+
+
+
 
     { day: 150, label: "Czciciel Serca Jezusowego", icon: "❤️" },
 
+
+
+
+
+
+
     { day: 155, label: "Stróż Tabernakulum", icon: "🏠" },
+
+
+
+
+
+
 
     { day: 160, label: "Pielgrzym", icon: "🥾" },
 
+
+
+
+
+
+
     { day: 165, label: "Trubadur Pański", icon: "🪕" },
+
+
+
+
+
+
 
     { day: 170, label: "Mąż Sprawiedliwy", icon: "⚖️" },
 
+
+
+
+
+
+
     { day: 175, label: "Pokorny Sługa", icon: "🧹" },
+
+
+
+
+
+
 
     { day: 180, label: "Cierpliwy w Próbach", icon: "🥀" },
 
+
+
+
+
+
+
     { day: 185, label: "Wędrowiec do Emaus", icon: "🚶" },
+
+
+
+
+
+
 
     { day: 190, label: "Ogrodnik Wiary", icon: "🌱" },
 
+
+
+
+
+
+
     { day: 195, label: "Rybak Ludzi", icon: "🎣" },
+
+
+
+
+
+
 
     { day: 200, label: "Głos na Pustyni", icon: "📢" },
 
+
+
+
+
+
+
     { day: 205, label: "Zwiastun Nadziei", icon: "🕊️" },
+
+
+
+
+
+
 
     { day: 210, label: "Posłaniec Pokoju", icon: "🏳️" },
 
+
+
+
+
+
+
     { day: 215, label: "Strażnik Tradycji", icon: "📚" },
+
+
+
+
+
+
 
     { day: 220, label: "Syn Światłości", icon: "☀️" },
 
+
+
+
+
+
+
     { day: 225, label: "Świadek Zmartwychwstania", icon: "🌅" },
+
+
+
+
+
+
 
     { day: 230, label: "Wierny Dziedzic", icon: "📜" },
 
+
+
+
+
+
+
     { day: 235, label: "Sługa Słowa", icon: "🎙️" },
+
+
+
+
+
+
 
     { day: 240, label: "Potomek Abrahama", icon: "🌌" },
 
+
+
+
+
+
+
     { day: 245, label: "Uczeń Miłości", icon: "💖" },
+
+
+
+
+
+
 
     { day: 250, label: "Widzący Boga", icon: "👁️" },
 
+
+
+
+
+
+
     { day: 255, label: "Mąż Modlitwy", icon: "🛐" },
+
+
+
+
+
+
 
     { day: 260, label: "Czciciel Eucharystii", icon: "🍞" },
 
+
+
+
+
+
+
     { day: 265, label: "Przyjaciel Ubogich", icon: "🤲" },
+
+
+
+
+
+
 
     { day: 270, label: "Sól Ziemi", icon: "🧂" },
 
+
+
+
+
+
+
     { day: 275, label: "Budowniczy Pokoju", icon: "🕊️" },
+
+
+
+
+
+
 
     { day: 280, label: "Światłość Świata", icon: "🏙️" },
 
+
+
+
+
+
+
     { day: 285, label: "Niosący Prawdę", icon: "🕯️" },
+
+
+
+
+
+
 
     { day: 290, label: "Latorośl Winna", icon: "🍇" },
 
+
+
+
+
+
+
     { day: 295, label: "Sługa Pokorny", icon: "🙇" },
+
+
+
+
+
+
 
     { day: 300, label: "Ziarno Dobrej Ziemi", icon: "🌾" },
 
+
+
+
+
+
+
     { day: 305, label: "Współpracownik Prawdy", icon: "✍️" },
+
+
+
+
+
+
 
     { day: 310, label: "Słup Ognisty", icon: "🔥" },
 
+
+
+
+
+
+
     { day: 315, label: "Strażnik Wiary", icon: "🔑" },
+
+
+
+
+
+
 
     { day: 320, label: "Widzący Chwałę", icon: "🌈" },
 
+
+
+
+
+
+
     { day: 325, label: "Syn Obietnicy", icon: "🌠" },
+
+
+
+
+
+
 
     { day: 330, label: "Towarzysz Aniołów", icon: "👼" },
 
+
+
+
+
+
+
     { day: 335, label: "Mieszkaniec Syjonu", icon: "⛰️" },
+
+
+
+
+
+
 
     { day: 340, label: "Domownik Boga", icon: "🏠" },
 
+
+
+
+
+
+
     { day: 345, label: "Współdziedzic Nieba", icon: "💎" },
+
+
+
+
+
+
 
     { day: 350, label: "Dziedzic Królestwa", icon: "🏰" },
 
+
+
+
+
+
+
     { day: 355, label: "Przyjaciel Chrystusa", icon: "🤝" },
+
+
+
+
+
+
 
     { day: 360, label: "Umiłowany Uczeń", icon: "💓" },
 
+
+
+
+
+
+
     { day: 365, label: "Zwycięzca w Panu", icon: "🏆" }
+
+
+
+
+
+
 
   ];
 
-  // PEŁNA PALETA 37 TEMATÓW (ZMIANA CO 10 DNI)
+  // --- PEŁNA PALETA 37 TEMATÓW (ZMIANA CO 10 DNI) ---
   const getTheme = (count) => {
     if (count >= 360) return { bg: "bg-amber-950", accent: "text-amber-400", border: "border-amber-500/50", aura: "bg-amber-500/30", btn: "bg-amber-600", card: "bg-amber-500/15" };
     if (count >= 350) return { bg: "bg-amber-900", accent: "text-amber-300", border: "border-amber-400/40", aura: "bg-amber-400/20", btn: "bg-amber-500", card: "bg-amber-400/10" };
@@ -324,10 +775,10 @@ function App() {
                </div>
                
                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 bg-slate-950 border border-white/10 rounded-3xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4 text-left">
-                  <p className="text-[9px] font-black uppercase text-slate-500 mb-3 border-b border-white/5 pb-1 uppercase">Droga Wiary 2026</p>
+                  <p className="text-[9px] font-black uppercase text-slate-500 mb-3 border-b border-white/5 pb-1">Droga Wiary 2026</p>
                   {nextBadge && (
                     <div className="mb-4">
-                      <div className="flex justify-between text-[8px] font-bold opacity-70 mb-1 uppercase">
+                      <div className="flex justify-between text-[8px] font-bold opacity-70 mb-1">
                         <span>Następna: {nextBadge.label}</span>
                         <span>{streak}/{nextBadge.day}d</span>
                       </div>
@@ -346,7 +797,6 @@ function App() {
                   </div>
                </div>
              </div>
-             {/* PRZYCISK ZAPASOWY */}
              <button onClick={() => OneSignal.Slidedown.promptHttpPermission()} className="text-[10px] uppercase font-black opacity-40 hover:opacity-100 transition-all">🔔 Powiadomienia 8:00</button>
           </div>
 
@@ -359,7 +809,7 @@ function App() {
           ) : currentVerse ? (
             <div className="flex flex-col items-center animate-fadeIn">
               
-              {/* SEKCJA AUDIO */}
+              {/* --- SEKCJA AUDIO --- */}
               {currentVerse.audio_url && (
                 <div className="w-full max-w-sm mb-12">
                   <p className="text-[10px] uppercase font-black opacity-40 tracking-[0.2em] mb-4">Głos Słowa</p>
